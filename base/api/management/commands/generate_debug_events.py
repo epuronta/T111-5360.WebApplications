@@ -32,8 +32,8 @@ class Command(BaseCommand):
     def generate_event(self, event_num):
 	e = Event()
 	
-	min_date = date.today().replace(day=1, month=1).toordinal()
-	max_date = date.today().toordinal()
+	min_date = (date.today() + timedelta(days=-30)).toordinal()
+	max_date = (date.today() + timedelta(days=60)).toordinal()
 	
 	e.start_date = random_day = date.fromordinal(random.randint(min_date, max_date))
 	e.end_date = e.start_date + timedelta(0, 60 * 60) # duration 60 minutes
