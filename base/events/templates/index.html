@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Events App</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}/events/style.css" type="text/css" />
+</head>
+<body>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("body").prepend($("<p />").text("Loading.."));
+    $.ajax({
+	url: "/api/events/?limit=10",
+	type: "GET",
+	dataType: "json",
+	success: function(data) {
+	    if(!data.events) {
+		$("body").prepend($("<p />").text("ERROR."));
+		return;
+	    } else {
+		$("body").prepend($("<p />").text("Loaded. Parsing.."));
+	    }
+	    
+	    
+	    for(ev in data.events) {
+		$("body").append(
+		    $("<p />").text(ev)
+		);
+	    }
+	}, error: function(jqXHR, textStatus, errorThrown) {
+	    console.log(jqXHR, textStatus, errorThrown);
+	}
+    });
+});
+
+</script>
+</html>

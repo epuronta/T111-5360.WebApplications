@@ -48,7 +48,7 @@ def list_events(request):
 	if not events:
 	    return HttpResponseNotFound()
     
-	return HttpResponse(events_to_json(events), mimetype='application/json')
+	return HttpResponse(events_to_json(events), mimetype="application/json")
 	
     except Exception as e:
 	return HttpResponseBadRequest(e)
