@@ -1,4 +1,4 @@
 from django.http import HttpResponse
 
 def index(request):
-    return HttpResponse('Main launcher page')
+    return HttpResponse('<a href="/events/">Events</a>')

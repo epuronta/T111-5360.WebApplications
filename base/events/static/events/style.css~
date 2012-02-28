@@ -1,1 +1,14 @@
-html { color: green; background: red; }
+html {
+    background: #333;
+    color: #eee;
+}
+
+
+div.event {
+    display: block;
+    border: solid red 1px;
+}
+
+div.event span.property {
+    display: block;
+}
