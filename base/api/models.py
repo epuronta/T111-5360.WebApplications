@@ -3,6 +3,9 @@ from django.core.urlresolvers import reverse
 import re
 
 class Event(models.Model):
+    remote_source_name = models.CharField(max_length=200) # Source name, freeform
+    remote_url = models.URLField(max_length=1000) # Uniquely idenfities Event fetched from remote source
+    
     title = models.CharField(max_length=200)
     descr = models.TextField()
 
