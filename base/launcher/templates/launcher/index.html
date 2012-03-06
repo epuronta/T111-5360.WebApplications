@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Launcher App</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}/launcher/style.css" type="text/css" />
+</head>
+<body>
+Launcher App
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    var counter = 0;
+    setInterval(function() {
+	$("body").text(counter);
+	counter = (++counter) % 100;
+    }, 100);
+});
+</script>
+</html>

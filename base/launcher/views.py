@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 def index(request):
-    return HttpResponse('<a href="/events/">Events</a>')
+    return render_to_response('launcher/index.html', { }, context_instance=RequestContext(request))

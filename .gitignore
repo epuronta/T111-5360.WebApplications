@@ -2,7 +2,7 @@
 *.pyc
 
 # Backup files from editor
-*.py~
+*.*~
 
 # Binary database files
 *.sqlite
