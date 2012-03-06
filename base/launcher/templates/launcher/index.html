@@ -7,16 +7,10 @@
 </head>
 <body>
 Launcher App
+
+<a href="{% url launcher-index-view %}">Home</a>
+<a href="{% url events-index-view %}">Events</a>
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-    var counter = 0;
-    setInterval(function() {
-	$("body").text(counter);
-	counter = (++counter) % 100;
-    }, 100);
-});
-</script>
 </html>
