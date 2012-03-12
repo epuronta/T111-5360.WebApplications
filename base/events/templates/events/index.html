@@ -3,16 +3,41 @@
 <head>
     <meta charset="utf-8" />
     <title>Events App</title>
-    <link rel="stylesheet" href="{{ STATIC_URL }}/events/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}events/css/style.css" type="text/css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    <style type="text/css">
+		li {	
+			margin-bottom:10px;
+			font-size:0.8em;
+		}
+	</style>
 </head>
 <body>
+
+	<header data-role="header">
+    	<h1>AaltoMobile</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
+	</header>
+    
+    <div data-role="content" id="list">
+    	<ul data-role="listview" data-theme="b">
+        	<li>Linkkien luominen dynaamisesti ladatulle contentille</li>
+    	</ul>
+    </div>
+    
+    <footer data-role="footer" data-position="fixed">
+    	<p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
+    </footer>
+    
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
     $("body").append(
-	$("<div />", {"id": "loadingIndicator"}).text("Loading")
+		$("<div />", {"id": "loadingIndicator"}).text("Loading")
     );
 
     $.ajax({
@@ -24,10 +49,12 @@ $(document).ready(function() {
 		console.log("Error, no events in data", data)
 		return;
 	    }
-
+		$("body").append($("<div>"));
 	    for(index in data.events) {
 		event = data.events[index];
-		var container = $("<div />", {"class": "event"});
+		
+		var container = $("<li />");
+		<!--container.append($("<div />", {"class": "event"}));-->
 
 		for(prop in event) {
 		    container.append(
@@ -38,7 +65,7 @@ $(document).ready(function() {
 		    );
 		}
 
-		$("body").append(container);
+		$("#list").children("ul").append(container);
 	    }
 
 	}, error: function(jqXHR, textStatus, errorThrown) {

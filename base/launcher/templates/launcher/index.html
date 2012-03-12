@@ -2,15 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Launcher App</title>
-    <link rel="stylesheet" href="{{ STATIC_URL }}/launcher/style.css" type="text/css" />
+    
+    <!-- viewport -->
+    <meta name="viewport" content="width=device-width">
+    
+    <!-- iOS stuff -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+    
+    <!-- For mobile browsers that do not recognize the viewport tag -->
+    <meta name="MobileOptimized" content="320" />
+    
+    <title>AaltoMobile</title>
+    
+    <link rel="apple-touch-icon" href="{{ STATIC_URL }}launcher/touch-icon.png" />
+	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}launcher/img/splash.png" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}launcher/css/style.css" type="text/css" />
+    <!--<link rel="stylesheet" href="{{ STATIC_URL }}launcher/css/jquery.mobile-1.0.1.min.css" type="text/css"/>
+	<script src="{{ STATIC_URL }}launcher/js/jquery-1.7.1.min.js"></script>
+    <script src="{{ STATIC_URL }}launcher/js/jquery.mobile-1.0.1.min.js"></script>-->
+    
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head>
 <body>
-Launcher App
 
-<a href="{% url launcher-index-view %}">Home</a>
-<a href="{% url events-index-view %}">Events</a>
+<div id="launcher" data-role="page" data-theme="b">
+
+	<header data-role="header">
+    	<h1>AaltoMobile</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
+	</header>
+    
+    <div data-role="content" id="tabs">
+    	<div data-role="navbar" data-iconpos="top">
+            <div class="ui-grid-b">
+                <div class="ui-block-a"><a href="{% url events-index-view %}" data-role="button" data-theme="b"><img src="../../static/launcher/img/events.png"/>Events</a></div>
+                <div class="ui-block-b"><a class="ui-disabled" href="" data-role="button" data-theme="e"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></div>
+                <div class="ui-block-c"><a class="ui-disabled" href="" data-role="button" data-theme="a"><img src="../../static/launcher/img/news.png"/>News</a></div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <footer data-role="footer" data-position="fixed">
+    	<p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
+    </footer>
+    
+</div>	
+
 </body>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 </html>
