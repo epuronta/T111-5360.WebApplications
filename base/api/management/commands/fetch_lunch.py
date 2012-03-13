@@ -9,6 +9,11 @@ from api.models.OpeningHours import OpeningHours
 from api.models.LunchList import LunchList
 from api.utils import obj_to_json
 
+'''
+Fetches lunch information: Restaurants, OpeningHours, LunchLists
+
+Uses Lounasaika.net API (http://www.lounasaika.net/api/), thanks guise!
+'''
 class Command(BaseCommand):
     
     def get_data_url(self):
@@ -58,6 +63,8 @@ class Command(BaseCommand):
 		    r.lon = 0
 		    
 		r.save()
+		
+		
 	
     def getdata(self, src, name):
 	try:
