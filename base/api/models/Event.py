@@ -22,3 +22,6 @@ class Event(models.Model):
     org_name = models.CharField(max_length=100)
     org_email = models.EmailField()
     org_phone = models.CharField(max_length=100)
+    
+    class Meta:
+	app_label = 'api'
