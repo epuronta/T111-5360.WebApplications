@@ -1,6 +1,6 @@
 import re
 from django.core.urlresolvers import reverse
-from models import Event
+from api.models_events import Event
 
 def events_to_json(events):
     output = '{"events":['
