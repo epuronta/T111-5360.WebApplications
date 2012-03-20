@@ -10,7 +10,7 @@ from api.utils import obj_to_json
 class Command(BaseCommand):
     
     def handle(self, *args, **options):
-	self.stdout.write('Handling stuff\n')
+	self.stdout.write('Getting Aalto Events stuff\n')
 	
 	events = self.extract_events('http://www.aalto.fi/fi/current/events/rss.xml')
 	for event in events:

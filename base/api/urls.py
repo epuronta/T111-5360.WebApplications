@@ -6,5 +6,7 @@ urlpatterns = patterns('',
     url(r'^events/$', 'api.views.list_events', name='list-events-view'),
     url(r'^events/(?P<event_id>\d+)/$', 'api.views.single_event', name='event-detail-view'),
     
+    url(r'^lunch/$', 'api.views.get_lunch', name='lunch-listing-view'),
+    
     #url(r'^news/$', 'api.views.news', name='list-news-view'),
 )

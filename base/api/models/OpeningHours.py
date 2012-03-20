@@ -13,8 +13,8 @@ WEEKDAYS = [
 ]
     
 class OpeningHours(models.Model):
-    store = models.ForeignKey("Restaurant")
-    weekday = models.IntegerField(choices=WEEKDAYS, unique=True)
+    restaurant = models.ForeignKey("Restaurant")
+    weekday = models.IntegerField(choices=WEEKDAYS)
     from_hour = models.IntegerField()
     to_hour = models.IntegerField()
 

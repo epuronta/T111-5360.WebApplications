@@ -14,8 +14,8 @@ WEEKDAYS = [
 
 class LunchList(models.Model):
     restaurant = models.ForeignKey("Restaurant")
-    weekday = models.IntegerField(choices=WEEKDAYS, unique=True)
-    lunch = models.CharField(max_length=2000)
+    weekday = models.IntegerField(choices=WEEKDAYS)
+    lunch = models.TextField()
     
     def get_weekday_display(self):
         return WEEKDAYS[self.weekday]

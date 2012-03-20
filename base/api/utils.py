@@ -1,6 +1,7 @@
 import re
 from django.core.urlresolvers import reverse
 from api.models_events import Event
+import HTMLParser
 
 def events_to_json(events):
     output = '{"events":['
@@ -16,6 +17,8 @@ def events_to_json(events):
     
 def obj_to_json(obj):
     output = '{'
+    
+    h = HTMLParser.HTMLParser()
     # Loop through object attributes
     for index, attr in enumerate(obj.__dict__):
 	if re.match('_', attr): # Ignore prefixed with _

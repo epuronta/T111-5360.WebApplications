@@ -61,3 +61,46 @@ def single_event(request, event_id):
 	return HttpResponseNotFound()
 
     return HttpResponse(events_to_json(event), mimetype='application/json')
+    
+    
+    
+def get_lunch(request):
+    if 'help' in request.GET:
+	helptext = 'Params:<br />\
+	"restaurant" name<br />\
+	"weekday" (1-7)<br />\
+	"campus" name<br />\
+	"offset" result set by given int,<br />\
+	"limit" result set to max given int size,<br />\
+	'
+	return HttpResponse(helptext)
+	
+    try:
+	'''
+	events = Event.objects.order_by('start_date')
+	
+	if 'start_date' in request.GET:
+	    start_date= datetime.strptime(request.GET['start_date'], '%Y-%m-%dT%H:%M:%S')
+	    events = events.filter(start_date__gte=start_date)
+	if 'end_date' in request.GET:
+	    end_date = datetime.strptime(request.GET['end_date'], '%Y-%m-%dT%H:%M:%S')
+	    events = events.filter(end_date__lte=end_date)
+	if 'q' in request.GET:
+	    events = events.filter(Q(title__contains=request.GET['q']) | Q(descr__contains=request.GET['q']))	
+	if 'offset' in request.GET:
+	    offset = int(request.GET['offset'])
+	    events = events[offset:]
+	if 'limit' in request.GET:
+	    limit = int(request.GET['limit'])
+	    events = events[:limit]
+	
+	
+	if not events:
+	    return HttpResponseNotFound()
+	'''
+	
+	#return HttpResponse(events_to_json(events), mimetype="application/json")
+	return HttpResponseNotFound()
+	
+    except Exception as e:
+	return HttpResponseBadRequest(e)
