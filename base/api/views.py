@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.db.models import Q
-from api.models_events import Event
+from api.models import Event
 from api.urls import urlpatterns
 from api.utils import events_to_json
 from datetime import datetime
