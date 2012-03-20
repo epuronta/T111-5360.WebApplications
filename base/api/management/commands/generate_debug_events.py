@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from api.models_events import Event
+from api.models import Event
 from datetime import date, timedelta
 import random
 

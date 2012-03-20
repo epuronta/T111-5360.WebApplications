@@ -36,3 +36,8 @@ footer p { float:right; font-size:0.5em; text-align:left;line-height:1.4em; marg
 footer p a:hover {
 	color:#0CF !important;	
 }
+
+.hidden {	
+	display:none;
+	width:100px;
+}
