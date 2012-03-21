@@ -1,35 +1,6 @@
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2) {
-	.ui-icon-events {
-		background-image:url(../img/events.png);
-		background-size: 18px 18px;
-	}
-	
-	.ui-icon-news {
-		background-image:url(../img/news.png);
-		background-size: 18px 18px;
-	}
-	
-	.ui-icon-lunch {
-		background-image:url(../img/lunch.png);
-		background-size: 18px 18px;
-	}
-}
-
 body { background: black; color: white; font-weight: bold; }
 
-
 a { text-decoration:none;}
-
-#tabs a img {
-	display:block;
-	clear:both;
-	margin:0px auto 7px auto;
-}
-
-#tabs a {
-	border-radius: 12px 12px 12px 12px;
-}
 
 footer p { float:right; font-size:0.5em; text-align:left;line-height:1.4em; margin-right:2%; }
 
@@ -39,5 +10,4 @@ footer p a:hover {
 
 .hidden {	
 	display:none;
-	width:100px;
 }

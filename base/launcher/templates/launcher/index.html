@@ -18,17 +18,15 @@
     
     <title>AaltoMobile</title>
     
-    <link rel="apple-touch-icon" href="{{ STATIC_URL }}launcher/touch-icon.png" />
-	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}launcher/img/splash.png" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
-    <!--<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.mobile-1.0.1.min.css" type="text/css"/>
-	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
-    <script src="{{ STATIC_URL }}js/jquery.mobile-1.0.1.min.js"></script>-->
+    <link rel="apple-touch-icon" href="{{ STATIC_URL }}launcher/touch-icon.png"/>
+	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}launcher/img/splash.png"/>
     
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
-</head>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}launcher/css/launcher.css" type="text/css"/>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" type="text/css"/>
+    
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/jquery.mobile-1.0.1.min.js"></script>
 <body>
 
 <div id="launcher" data-role="page" data-theme="b">
@@ -42,7 +40,7 @@
     	<div data-role="navbar" data-iconpos="top">
             <div class="ui-grid-b">
                 <div class="ui-block-a"><a href="{% url events-index-view %}" data-role="button" data-theme="b"><img src="../../static/launcher/img/events.png"/>Events</a></div>
-                <div class="ui-block-b"><a class="ui-disabled" href="" data-role="button" data-theme="e"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></div>
+                <div class="ui-block-b"><a href="{% url lunch-index-view %}" data-role="button" data-theme="e"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></div>
                 <div class="ui-block-c"><a class="ui-disabled" href="" data-role="button" data-theme="a"><img src="../../static/launcher/img/news.png"/>News</a></div>
             </div>
             

@@ -1,6 +1,6 @@
 import re
 from django.core.urlresolvers import reverse
-from api.models_events import Event
+from api.models import Event
 import HTMLParser
 
 def events_to_json(events):

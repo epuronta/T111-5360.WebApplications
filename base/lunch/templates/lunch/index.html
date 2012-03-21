@@ -16,17 +16,17 @@
     <!-- For mobile browsers that do not recognize the viewport tag -->
     <meta name="MobileOptimized" content="320" />
     
-    <title>Events App</title>
+    <title>AaltoMobile - Events</title>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
     
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/jquery.mobile-1.0.1.min.js"></script>
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
         <header data-role="header">
-            <h1>AaltoMobile</h1>
+            <h1>AaltoMobile - Events</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
         </header>
         
