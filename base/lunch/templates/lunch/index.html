@@ -21,10 +21,12 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
     
 	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
-	<script src="{{ STATIC_URL }}js/jquery.mobile-1.0.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head>
 <body>
+
 	<div id="events" data-role="page" data-theme="b">
+    
         <header data-role="header">
             <h1>AaltoMobile - Events</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
@@ -38,7 +40,9 @@
         <footer data-role="footer" data-position="fixed">
             <p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
         </footer>
+        
     </div>
+    
 </body>
 
 <script>
