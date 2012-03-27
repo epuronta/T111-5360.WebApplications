@@ -122,7 +122,6 @@ INSTALLED_APPS = (
     'api',
     'events',
     'launcher',
-	'lunch',
     
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',

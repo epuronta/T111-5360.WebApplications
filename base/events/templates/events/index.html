@@ -31,7 +31,7 @@
         </header>
         
         <div data-role="content" id="list">
-            <ul id="eventlist" data-role="listview" data-theme="b">
+            <ul id="eventlist" data-role="listview" data-theme="b" data-divider-theme="d">
             </ul>
         </div>
         
@@ -42,44 +42,60 @@
 </body>
 
 <script>
-$( '#events' ).live( 'pagebeforecreate',function(event){
+$(document).ready(function(){
+	console.log("lataus");
     $("body").append(
 		$("<div />", {"id": "loadingIndicator"}).text("Loading")
     );
 
     $.ajax({
-	url: "/api/events/?limit=10",
-	type: "GET",
-	dataType: "json",
-	success: function(data) {
-	    if(!data.events) {
-		console.log("Error, no events in data", data)
-		return;
-	    }
-		$("body").append($("<div>"));
-	    for(index in data.events) {
-			event = data.events[index];
-		
-			var container = $("<li />");
-
-			for(prop in event) {
-		 	   container.append(
-				$("<span />")
-				    .addClass(prop)
-				    .addClass("property")
-					.addClass("hidden")
-				    .text(event[prop])
-		  	  );
+		url: "/api/events/?limit=10",
+		type: "GET",
+		dataType: "json",
+		success: function(data) {
+			if(!data.events) {
+				console.log("Error, no events in data", data)
+				return;
 			}
-			$(container.children("span").get(0)).removeClass("hidden");
-			$("#list").children("ul").append(container);
-			
-	    }
+			$("body").append($("<div>"));
+			data.events.sort(compareDates);
+			for(index in data.events) {
+				event = data.events[index];
+				var container = $("<li />");
+				if(index != 0 && compareDates(data.events[index],data.events[index-1])) {
+					console.log(index);
+					container.addClass("ui-li-divider");
+				}
+				for(prop in event) {
+				   container.append(
+					$("<span />")
+						.addClass(prop)
+						.addClass("property")
+						.addClass("hidden")
+						.text(event[prop])
+				  );
+				}
+				$(container.children("span").get(3)).removeClass("hidden");
+				$("#list").children("ul").append(container);
+				
+			}
 		$('#eventlist').listview('refresh');
 	}, error: function(jqXHR, textStatus, errorThrown) {
-	    console.log(jqXHR, textStatus, errorThrown);
+	   	console.log(jqXHR, textStatus, errorThrown);
 	}
     });
+	
+	function compareDates(evt1, evt2) {
+		d1 = createDate(evt1.start_date);
+		d2 = createDate(evt2.start_date);
+		return d1.getTime()-d2.getTime();
+	}
+	
+	function createDate(str) {
+		regex = /(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/;
+		date = regex.exec(str)
+		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
+	}
 });
 
 </script>

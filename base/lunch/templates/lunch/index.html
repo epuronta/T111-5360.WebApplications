@@ -1,319 +1,90 @@
-<!DOCTYPE html> 
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Lunch</title>
-<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-      <title>Page Title</title> 
-      <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
-      <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
-      <script src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
-</head> 
-<body> 
+    <meta charset="utf-8" />
+    
+    <!-- viewport -->
+    <meta name="viewport" content="width=device-width">
+    
+    <!-- iOS stuff -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+    
+    <!-- For mobile browsers that do not recognize the viewport tag -->
+    <meta name="MobileOptimized" content="320" />
+    
+    <title>AaltoMobile - Events</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+    
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+</head>
+<body>
 
-<div data-role="page" id="campuslist" data-theme="b">
-	<div data-role="header">
-		<h1>Lunch</h1>
-	</div>
-	<div data-role="content">	
-		<ul data-role="listview">
-			<li><a href="#otaniemi">Otaniemi</a></li>
-            <li><a href="#toolo">Töölö</a></li>
-			<li><a href="#keskusta">Keskusta</a></li>
-            <li><a href="#kumpula">Kumpula</a></li>
-            <li><a href="#arabia">Arabia</a></li>
-            <li><a href="#viikki">Viikki</a></li>
-		</ul>		
-	</div><!-- /content -->
-</div><!-- /page -->
-
-<div data-role="page" id="otaniemi" data-theme="b">
-	<div data-role="header">
-		<h1>Lunch - Otaniemi</h1>
-	</div>
-<div data-role="content">	
-
-    <div data-role="collapsible-set">
-
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>Teekkariravintolat</h3>
-        <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
-        <p>Broilerrisottoa currykastikeella	G VL</p> 
-        <p>Kasvispihvej&auml; currykastikeella	G VL </p>
-        <p>Salaattia chilimarinoiduista katkaravuista G M</p>
+	<div id="events" data-role="page" data-theme="b">
+    
+        <header data-role="header">
+            <h1>AaltoMobile - Events</h1>
+            <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
+        </header>
+        
+        <div data-role="content" id="list">
+            <ul id="eventlist" data-role="listview" data-theme="b">
+            </ul>
         </div>
         
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>T&auml;ff&auml;</h3>
-        <p>Riistak&auml;ristys, perunamuhennos g</p>
-        <p>Sienik&auml;&auml;ryleet L G </p>
-        <p>Mozzarellasalaatti VL g </p>
-        <p>Kukkakaalikeitto L G </p>
-        <p>A la Carte: T&auml;ff&auml;nleike L G </p>
-        </div>
+        <footer data-role="footer" data-position="fixed">
+            <p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
+        </footer>
         
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>Alvari</h3>
-        <p>Tonnikala-pinaattilasagnette VL </p>
-        <p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita L </p>
-        <p>Uuniperuna feta-oliivit&auml;ytteell&auml; G </p>
-        <p>Puolukkarahka G VL </p>
-        </div>
-        
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>Puu</h3>
-        <p>Jauhelihapihvej&auml; italialaisittain (G L M),Pennepastaa (L M) </p>
-        <p>Herkkusieni-perunapannua (G L M) </p>
-        <p>Mansikkarahkaa kerroksittain (G L)</p>
-        </div>
-        
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>Cantina</h3>
-        <p>Broilerin rintafileet&auml;, barbequekastiketta ja riisi&auml;.	G L </p>
-        <p>Kinkku-ananas pizza	L </p>
-        <p>Salami-sipuli pizza	L </p>
-        <p>Jauheliha-tomaatti pizza	L </p>
-        <p>Tonnikala-aura-paprika pizza	L </p>
-        <p>Kebab-herkkusieni pizza	L </p>
-        <p>Tomaatti-sipuli-feta pizza	L </p>
-        <p>Kana-ceasarsalaatti	G L </p>
-        <p>Tonnikalasalaatti	G L </p>
-        <p>Vuohenjuustosalaatti	G VL</p>
-        </div>
-        
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>Kvarkki</h3>
-        <p>Jauhelihapihvej&auml; italialaisittain G L M,Pennepastaa L M </p>
-        <p>A la carte: Chilipaahdettua lohta G L M, Chili-kermaviilikastiketta G L, Perunasosetta G VL </p>
-        <p>Herkkusieni-perunapannua G L M </p>
-        <p>Bataattisosekeittoa G VL </p>
-        <p>Kalkkuna-mangosalaattia L M </p>
-        <p>L&auml;mmin broilerinfilee-ananasleip&auml; L </p>
-        <p>Mansikkarahkaa kerroksittain G L</p>
-        </div>
-        
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>TUAS-talo</h3>
-        <p>Nakkistroganoffia VL ,Keitettyj&auml; perunoita G L M </p>
-        <p>Yrttisi&auml; kalapaloja L M, Sitruunamajoneesia G L,Keitettyj&auml; perunoita G L M </p>
-        <p>Kasvis-vehn&auml;risottoa luomutofulla L M </p>
-        <p>Bistro: Kermaista bataatti-maissisosekeittoa G VL </p>
-        <p>Bistro: Kalkkunasalaattia G L </p>
-        <p>Bistro: Chili-broileriwrap L, Chili-kermaviilikastiketta G L </p>
-        <p>A la carte:Riistak&auml;ristyst&auml; G L M,Perunasosetta G VL </p>
-        </div>
-        
-        <div data-role="collapsible"  data-collapsed="true">
-        <h3>Silinteri</h3>
-        <p>Kalkkunasalaattia, leip&auml;&auml; L </p>
-        <p>Kermaista purjo-perunasosekeittoa G VL</p> 
-        <p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita G </p>
-        <p>Uuniperuna feta-oliivit&auml;ytteell&auml; L </p>
-        <p>A la carte: sinihomejuusto-ananaslohta, tilliperunoita, hunaja-kirveliporkkanoita G</p>
-        <p>Puolukkarahka G VL </p>
-        </div>
-        
-     </div><!-- /collapsible-set -->
-	
-</div><!-- /content -->
-</div><!-- /page -->
-
-<div data-role="page" id="toolo" data-theme="b">
-	<div data-role="header">
-		<h1>Lunch - Töölö</h1>
-	</div>
-<div data-role="content">	
-
-   <div data-role="collapsible-set">
-
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Rafla/Proffa</h3>
-    <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
-	<p>Broilerrisottoa currykastikeella	G VL</p> 
-	<p>Kasvispihvej&auml; currykastikeella	G VL </p>
-	<p>Salaattia chilimarinoiduista katkaravuista G M</p>
-	</div>
-	
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Chydenia</h3>
-	<p>Riistak&auml;ristys, perunamuhennos g</p>
-	<p>Sienik&auml;&auml;ryleet L G </p>
-	<p>Mozzarellasalaatti VL g </p>
-	<p>Kukkakaalikeitto L G </p>
-	<p>A la Carte: T&auml;ff&auml;nleike L G </p>
-	</div>
+    </div>
     
-    <div data-role="collapsible"  data-collapsed="true">
-	<h3>hanken</h3>
-	<p>Tonnikala-pinaattilasagnette VL </p>
-	<p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita L </p>
-	<p>Uuniperuna feta-oliivit&auml;ytteell&auml; G </p>
-	<p>Puolukkarahka G VL </p>
-	</div>
-    
-     </div><!-- /collapsible-set -->
-	
-</div><!-- /content -->
-</div><!-- /page -->
-
-<div data-role="page" id="keskusta" data-theme="b">
-	<div data-role="header">
-		<h1>Lunch - Keskusta</h1>
-	</div>
-<div data-role="content">	
-
-    <div data-role="collapsible-set">
-
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Kipsari</h3>
-    <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
-	<p>Broilerrisottoa currykastikeella	G VL</p> 
-	<p>Kasvispihvej&auml; currykastikeella	G VL </p>
-	<p>Salaattia chilimarinoiduista katkaravuista G M</p>
-	</div>
-	
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Meccala</h3>
-	<p>Riistak&auml;ristys, perunamuhennos g</p>
-	<p>Sienik&auml;&auml;ryleet L G </p>
-	<p>Mozzarellasalaatti VL g </p>
-	<p>Kukkakaalikeitto L G </p>
-	<p>A la Carte: T&auml;ff&auml;nleike L G </p>
-	</div>
-    
-    <div data-role="collapsible"  data-collapsed="true">
-	<h3>Katri-Antell</h3>
-	<p>Tonnikala-pinaattilasagnette VL </p>
-	<p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita L </p>
-	<p>Uuniperuna feta-oliivit&auml;ytteell&auml; G </p>
-	<p>Puolukkarahka G VL </p>
-	</div>
-    
-    <div data-role="collapsible"  data-collapsed="true">
-	<h3>Unicafe</h3>
-	<p>Jauhelihapihvej&auml; italialaisittain (G L M),Pennepastaa (L M) </p>
-	<p>Herkkusieni-perunapannua (G L M) </p>
-	<p>Mansikkarahkaa kerroksittain (G L)</p>
-	</div>
-    
-     </div><!-- /collapsible-set -->
-	
-</div><!-- /content -->
-</div><!-- /page -->
-
-<div data-role="page" id="kumpula" data-theme="b">
-  <div data-role="header">
-    <h1>Lunch - Kumpula</h1>
-  </div>
-  <div data-role="content">
-
-   <div data-role="collapsible-set">
-
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Rafla/Proffa</h3>
-    <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
-	<p>Broilerrisottoa currykastikeella	G VL</p> 
-	<p>Kasvispihvej&auml; currykastikeella	G VL </p>
-	<p>Salaattia chilimarinoiduista katkaravuista G M</p>
-	</div>
-	
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Chydenia</h3>
-	<p>Riistak&auml;ristys, perunamuhennos g</p>
-	<p>Sienik&auml;&auml;ryleet L G </p>
-	<p>Mozzarellasalaatti VL g </p>
-	<p>Kukkakaalikeitto L G </p>
-	<p>A la Carte: T&auml;ff&auml;nleike L G </p>
-	</div>
-    
-    <div data-role="collapsible"  data-collapsed="true">
-	<h3>hanken</h3>
-	<p>Tonnikala-pinaattilasagnette VL </p>
-	<p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita L </p>
-	<p>Uuniperuna feta-oliivit&auml;ytteell&auml; G </p>
-	<p>Puolukkarahka G VL </p>
-	</div>
-    
-     </div><!-- /collapsible-set -->
-	
-</div><!-- /content -->
-</div><!-- /page -->
-
-<div data-role="page" id="arabia" data-theme="b">
-  <div data-role="header">
-    <h1>Lunch - Arabia</h1>
-  </div>
-  <div data-role="content">
-
-   <div data-role="collapsible-set">
-
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Rafla/Proffa</h3>
-    <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
-	<p>Broilerrisottoa currykastikeella	G VL</p> 
-	<p>Kasvispihvej&auml; currykastikeella	G VL </p>
-	<p>Salaattia chilimarinoiduista katkaravuista G M</p>
-	</div>
-	
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Chydenia</h3>
-	<p>Riistak&auml;ristys, perunamuhennos g</p>
-	<p>Sienik&auml;&auml;ryleet L G </p>
-	<p>Mozzarellasalaatti VL g </p>
-	<p>Kukkakaalikeitto L G </p>
-	<p>A la Carte: T&auml;ff&auml;nleike L G </p>
-	</div>
-    
-    <div data-role="collapsible"  data-collapsed="true">
-	<h3>hanken</h3>
-	<p>Tonnikala-pinaattilasagnette VL </p>
-	<p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita L </p>
-	<p>Uuniperuna feta-oliivit&auml;ytteell&auml; G </p>
-	<p>Puolukkarahka G VL </p>
-	</div>
-    
-     </div><!-- /collapsible-set -->
-	
-</div><!-- /content -->
-</div><!-- /page -->
-
-<div data-role="page" id="viikki" data-theme="b">
-  <div data-role="header">
-    <h1>Lunch - Viikki</h1>
-  </div>
-  <div data-role="content">
-
-   <div data-role="collapsible-set">
-
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Rafla/Proffa</h3>
-    <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
-	<p>Broilerrisottoa currykastikeella	G VL</p> 
-	<p>Kasvispihvej&auml; currykastikeella	G VL </p>
-	<p>Salaattia chilimarinoiduista katkaravuista G M</p>
-	</div>
-	
-	<div data-role="collapsible"  data-collapsed="true">
-	<h3>Chydenia</h3>
-	<p>Riistak&auml;ristys, perunamuhennos g</p>
-	<p>Sienik&auml;&auml;ryleet L G </p>
-	<p>Mozzarellasalaatti VL g </p>
-	<p>Kukkakaalikeitto L G </p>
-	<p>A la Carte: T&auml;ff&auml;nleike L G </p>
-	</div>
-    
-    <div data-role="collapsible"  data-collapsed="true">
-	<h3>Hanken</h3>
-	<p>Tonnikala-pinaattilasagnette VL </p>
-	<p>Lindstr&ouml;minpihvit, ruskeaa kastiketta, keitettyj&auml; perunoita L </p>
-	<p>Uuniperuna feta-oliivit&auml;ytteell&auml; G </p>
-	<p>Puolukkarahka G VL </p>
-	</div>
-    
-     </div><!-- /collapsible-set -->
-	
-</div><!-- /content -->
-</div><!-- /page -->
-
 </body>
+
+<script>
+$( '#events' ).live( 'pagebeforecreate',function(event){
+    $("body").append(
+		$("<div />", {"id": "loadingIndicator"}).text("Loading")
+    );
+
+    $.ajax({
+	url: "/api/events/?limit=10",
+	type: "GET",
+	dataType: "json",
+	success: function(data) {
+	    if(!data.events) {
+		console.log("Error, no events in data", data)
+		return;
+	    }
+		$("body").append($("<div>"));
+	    for(index in data.events) {
+			event = data.events[index];
+		
+			var container = $("<li />");
+
+			for(prop in event) {
+		 	   container.append(
+				$("<span />")
+				    .addClass(prop)
+				    .addClass("property")
+					.addClass("hidden")
+				    .text(event[prop])
+		  	  );
+			}
+			$(container.children("span").get(0)).removeClass("hidden");
+			$("#list").children("ul").append(container);
+			
+	    }
+		$('#eventlist').listview('refresh');
+	}, error: function(jqXHR, textStatus, errorThrown) {
+	    console.log(jqXHR, textStatus, errorThrown);
+	}
+    });
+});
+
+</script>
 </html>
