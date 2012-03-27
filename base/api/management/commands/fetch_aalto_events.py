@@ -3,6 +3,7 @@ import urllib2
 from datetime import date, timedelta
 import dateutil.parser
 from xml.dom.minidom import parse
+from django.utils.encoding import smart_unicode
 
 from api.models import Event
 from api.utils import obj_to_json
@@ -37,8 +38,8 @@ class Command(BaseCommand):
 		print 'Event already exists, continuing.'
 		continue
 	    
-	    e.title = self.getdata(item, 'title')
-	    e.descr = self.getdata(item, 'description')
+	    e.title = smart_unicode(self.getdata(item, 'title'))
+	    e.descr = smart_unicode(self.getdata(item, 'description'))
 	    
 	    try:
 		e.start_date = dateutil.parser.parse(self.getdata(item, 'xcal:dtstart'))
@@ -59,7 +60,7 @@ class Command(BaseCommand):
 		e.lat = 0
 		e.lon = 0
 
-	    e.org_name = self.getdata(item, 'author')
+	    e.org_name = smart_unicode(self.getdata(item, 'author'))
 	    
 	    # TODO: Lookup street address based on geoloc
 	    e.street_address = ''
