@@ -21,6 +21,11 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
     
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script>
+		$(document).bind("mobileinit", function() {
+			$.mobile.listview.prototype.options.filterPlaceholder = "Etsi tapahtumia ...";
+		});
+	</script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head>
 <body>
@@ -31,7 +36,7 @@
         </header>
         
         <div data-role="content" id="list">
-            <ul id="eventlist" data-role="listview" data-theme="b" data-divider-theme="b">
+            <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">
             </ul>
         </div>
         
@@ -41,8 +46,11 @@
     </div>
 </body>
 
+
+
 <script>
-$(document).ready(function(){
+
+$(document).live('pageinit', function(){
 	var weekday=new Array(7);
 	weekday[0]="Sunday";
 	weekday[1]="Monday";
@@ -71,7 +79,7 @@ $(document).ready(function(){
     );
 
     $.ajax({
-		url: "/api/events/?limit=10",
+		url: "/api/events/?limit=10&offset=0",
 		type: "GET",
 		dataType: "json",
 		success: function(data) {
@@ -79,10 +87,11 @@ $(document).ready(function(){
 				console.log("Error, no events in data", data)
 				return;
 			}
-			$("body").append($("<div>"));
+			
 			data.events.sort(compareDates);
 			for(index in data.events) {
 				event = data.events[index];
+				console.log(event);
 				if(index == 0 || compareDates(event, data.events[index-1])) {
 					var count = countSameDates(event, data.events);
 					var divider = $("<li />");
@@ -103,7 +112,7 @@ $(document).ready(function(){
 						.text(event[prop])
 				  	);
 				}
-				$(container.children("span").get(0)).removeClass("hidden");
+				$(container.children("span").get(5)).removeClass("hidden");
 				$("#list").children("ul").append(container);
 			}
 		$('#eventlist').listview('refresh');
