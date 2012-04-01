@@ -19,6 +19,7 @@
     <title>AaltoMobile > Events</title>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" /> 
     
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script>
@@ -27,6 +28,7 @@
 		});
 	</script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
@@ -50,7 +52,7 @@
 
 <script>
 
-$(document).live('pageinit', function(){
+$(document).ready(function(){
 	var weekday=new Array(7);
 	weekday[0]="Sunday";
 	weekday[1]="Monday";
@@ -91,7 +93,7 @@ $(document).live('pageinit', function(){
 			data.events.sort(compareDates);
 			for(index in data.events) {
 				event = data.events[index];
-				console.log(event);
+				//console.log(event);
 				if(index == 0 || compareDates(event, data.events[index-1])) {
 					var count = countSameDates(event, data.events);
 					var divider = $("<li />");
@@ -103,16 +105,22 @@ $(document).live('pageinit', function(){
 					$("#list").children("ul").append(divider);
 				}
 				var container = $("<li />");
+				container.append($("<a />")
+					.attr({"href":"#","id":"eventdialog","data-role":"button"})
+					.text(event.title.substr(12))
+				);
 				for(prop in event) {
-				   	container.append(
-					$("<span />")
-						.addClass(prop)
-						.addClass("property")
-						.addClass("hidden")
-						.text(event[prop])
-				  	);
+				   	container
+						.append(
+							$("<span />")
+								.addClass(prop)
+								.addClass("property")
+								.addClass("hidden")
+								.text(event[prop])
+							)
+					.attr("data-theme","c");
 				}
-				$(container.children("span").get(5)).removeClass("hidden");
+				//$(container.children("span").get(5)).removeClass("hidden");
 				$("#list").children("ul").append(container);
 			}
 		$('#eventlist').listview('refresh');
@@ -141,6 +149,24 @@ $(document).live('pageinit', function(){
 		date = regex.exec(str)
 		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
 	}
+	
+	$("#eventdialog").live("click", function() {
+		var data = $(this).siblings("span");
+		console.log(data);
+		//.get(5)).removeClass("hidden");
+		$('<div>').simpledialog2({
+			mode: 'blank',
+			headerText: 'Some Stuff',
+			headerClose: true,
+			dialogAllow: true,
+			dialogForce: true,
+			//callbackClose: $(this).die(),
+			blankContent : 
+			  "<ul data-role='listview'><li>Some</li><li>List</li><li>Items</li></ul>"+
+			  // NOTE: the use of rel="close" causes this button to close the dialog.
+			  "<a rel='close' data-role='button' href='#'>Close</a>"
+		});
+	});
 });
 
 </script>
