@@ -1,0 +1,17 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.ui-simpledialog-container h1 {
+	font-size:1.0em !important;	
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.ui-icon-evt-icon-aalto {
+		background-image: url("evt-icon.png") !important;
+		background-size: 18px 18px !important;
+	}
+}
+
+.ui-icon-evt-icon-aalto {
+	background-image: url("evt-icon.png") !important;
+}
