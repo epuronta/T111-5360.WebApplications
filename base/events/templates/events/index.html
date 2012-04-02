@@ -43,13 +43,8 @@
             </ul>
         </div>
         
-        <footer data-role="footer" data-position="fixed">
-            <p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
-        </footer>
     </div>
 </body>
-
-
 
 <script>
 
@@ -124,7 +119,6 @@ $(document).ready(function(){
 							)
 						.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"});
 				}
-				//$(container.children("span").get(5)).removeClass("hidden");
 				$("#list").children("ul").append(container);
 				
 			}
@@ -158,15 +152,14 @@ $(document).ready(function(){
 	$("#eventdialog").live("click", function() {
 		var data = $(this).siblings("span");
 		var title = data[5];
-		
-		//.get(5)).removeClass("hidden");
+		var descr = data[4];
+		descr = $(descr).text();
+		console.log(descr)
 		$('<div>').simpledialog2({
 			mode: 'blank',
 			headerText: $(title).text().substr(0,10),
 			headerClose: true,
-			blankContent : 
-			  "<ul data-role='listview'><li>Some</li><li>List</li><li>Items</li></ul>"+
-			  // NOTE: the use of rel="close" causes this button to close the dialog.
+			blankContent : descr +
 			  "<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
