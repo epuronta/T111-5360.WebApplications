@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <title>Lunch</title>
 <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-      <title>Page Title</title> 
+      <title>AaltoMobile > Lunch</title> 
+      <link rel="stylesheet" href="{{ STATIC_URL }}lunch/css/lunch.css" type="text/css" />
       <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
       <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
       <script src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
@@ -14,6 +15,7 @@
 <div data-role="page" id="campuslist" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
 	</div>
 	<div data-role="content">	
 		<ul data-role="listview">

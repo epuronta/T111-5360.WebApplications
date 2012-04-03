@@ -1,6 +1,16 @@
 @charset "UTF-8";
 /* CSS Document */
 
+.ui-simpledialog-container div.ui-header {
+	margin:0 !important;
+}
+
+.ui-simpledialog-container div {
+	font-size:0.8em !important;	
+	margin:5px 2% 10px 2%;
+	text-align:left;
+}
+
 .ui-simpledialog-container h1, h2, h3 {
 	font-size:1em;	
 	margin: auto 1% 15px 1%
@@ -12,8 +22,18 @@
 	text-align:left;
 }
 
+.ui-simpledialog-container li {
+	font-size:0.8em !important;	
+	margin-bottom:5px;
+}
+
 .ui-simpledialog-container img  {
-	display:none;
+	/*display:none;*/
+}
+
+.ui-simpledialog-container .remote_url .ui-link {
+	margin-top:15px;
+	color:#096 !important;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {

@@ -35,7 +35,7 @@
 	<div id="events" data-role="page" data-theme="b">
         <header data-role="header">
             <h1>Events</h1>
-            <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
+            <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         </header>
         
         <div data-role="content" id="list">
@@ -49,84 +49,7 @@
 <script>
 
 $(document).ready(function(){
-	var weekday=new Array(7);
-	weekday[0]="Sunday";
-	weekday[1]="Monday";
-	weekday[2]="Tuesday";
-	weekday[3]="Wednesday";
-	weekday[4]="Thursday";
-	weekday[5]="Friday";
-	weekday[6]="Saturday";
-	
-	var month=new Array(12);
-	month[0]="January";
-	month[1]="February";
-	month[2]="March";
-	month[3]="April";
-	month[4]="May";
-	month[5]="June";
-	month[6]="July";
-	month[7]="August";
-	month[8]="September";
-	month[9]="October";
-	month[10]="November";
-	month[11]="December";
-	
-    /*$("body").append(
-		$("<div />", {"id": "loadingIndicator"}).text("Loading")
-    );*/
-
-    $.ajax({
-		url: "/api/events/?limit=10&offset=0",
-		type: "GET",
-		dataType: "json",
-		success: function(data) {
-			if(!data.events) {
-				console.log("Error, no events in data", data)
-				return;
-			}
-			
-			data.events.sort(compareDates);
-			for(index in data.events) {
-				event = data.events[index];
-				//console.log(event);
-				if(index == 0 || compareDates(event, data.events[index-1])) {
-					var count = countSameDates(event, data.events);
-					var divider = $("<li />");
-					var date = createDate(event.start_date);
-					divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + month[date.getMonth()]);
-					divider.append(
-						$("<span />").addClass("ui-li-count").text(count)
-					);
-					$("#list").children("ul").append(divider);
-				}
-				var container = $("<li />");
-				container.append($("<a />")
-					.attr({"href":"#","id":"eventdialog","data-role":"button"})
-					.text(event.title.substr(12))
-				);
-				var icon = "false"
-				if(event.remote_source_name == "AaltoEvents")
-					icon = "evt-icon-aalto"
-				for(prop in event) {
-				   	container
-						.append(
-							$("<span />")
-								.addClass(prop)
-								.addClass("property")
-								.addClass("hidden")
-								.text(event[prop])
-							)
-						.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"});
-				}
-				$("#list").children("ul").append(container);
-				
-			}
-		$('#eventlist').listview('refresh');
-	}, error: function(jqXHR, textStatus, errorThrown) {
-	   	console.log(jqXHR, textStatus, errorThrown);
-	}
-    });
+   	console.log(getEvents(15, 0))
 	
 	function countSameDates(event, events) {
 		var count = 0;		
@@ -135,6 +58,84 @@ $(document).ready(function(){
 				count++;
 		}
 		return count;
+	}
+	
+	function getEvents(limit, offset) {
+		var weekday=new Array(7);
+		weekday[0]="Sunday";
+		weekday[1]="Monday";
+		weekday[2]="Tuesday";
+		weekday[3]="Wednesday";
+		weekday[4]="Thursday";
+		weekday[5]="Friday";
+		weekday[6]="Saturday";
+		
+		var month=new Array(12);
+		month[0]="January";
+		month[1]="February";
+		month[2]="March";
+		month[3]="April";
+		month[4]="May";
+		month[5]="June";
+		month[6]="July";
+		month[7]="August";
+		month[8]="September";
+		month[9]="October";
+		month[10]="November";
+		month[11]="December";
+		
+		$.ajax({
+			url: "/api/events/?limit=" + limit + "&offset=" + offset,
+			type: "GET",
+			dataType: "json",
+			success: function(data) {
+				if(!data.events) {
+					console.log("Error, no events in data", data)
+					return;
+				}
+				
+				data.events.sort(compareDates);
+				for(index in data.events) {
+					event = data.events[index];
+					if(index == 0 || compareDates(event, data.events[index-1])) {
+						var count = countSameDates(event, data.events);
+						var divider = $("<li />");
+						var date = createDate(event.start_date);
+						divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + month[date.getMonth()]);
+						divider.append(
+							$("<span />").addClass("ui-li-count").text(count)
+						);
+						$("#list").children("ul").append(divider);
+					}
+					var container = $("<li />");
+					container.append($("<a />")
+						.attr({"href":"#","data-role":"button"})
+						.addClass("eventdialog")
+						.text(event.title.substr(12))
+					);
+					var icon = "false"
+					if(event.remote_source_name == "AaltoEvents")
+						icon = "evt-icon-aalto"
+					for(prop in event) {
+						container
+							.append(
+								$("<span />")
+									.addClass(prop)
+									.addClass("property")
+									.addClass("hidden")
+									.text(event[prop])
+								)
+							.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"});
+					}
+					$("#list").children("ul").append(container);
+					
+				}
+			$('#eventlist').listview('refresh');
+		}, error: function(jqXHR, textStatus, errorThrown) {
+			console.log(jqXHR, textStatus, errorThrown);
+		}
+		});
+		return true;
 	}
 	
 	function compareDates(evt1, evt2) {
@@ -149,18 +150,24 @@ $(document).ready(function(){
 		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
 	}
 	
-	$("#eventdialog").live("click", function() {
+	$(".eventdialog").live("click", function() {
 		var data = $(this).siblings("span");
+		console.log(data)
+		var descr = $(data[4]);
+		console.log(descr.children());
+		var test = $(descr).find('img');
+		console.log(test);	
+	
 		var title = data[5];
-		var descr = data[4];
-		descr = $(descr).text();
-		console.log(descr)
+		var remote_url = data[14];
+
 		$('<div>').simpledialog2({
 			mode: 'blank',
 			headerText: $(title).text().substr(0,10),
 			headerClose: true,
-			blankContent : descr +
-			  "<a rel='close' data-role='button' href='#'>Close</a>"
+			blankContent : $(descr).text() +
+			"<p class='remote_url'><a href=" + $(remote_url).text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
+			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
 });
