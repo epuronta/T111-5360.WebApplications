@@ -28,7 +28,10 @@
 <div id="campuslist" data-role="page" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
-       <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+        <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
+
 	</div>
 	<div data-role="content">	
 		<ul data-role="listview">
@@ -58,6 +61,7 @@ $(document).ready(function(){
 	var restaurant_colset = $("<div />")
 		.attr({"data-role":'collapsible-set'})
 	
+
 	for(campus in campuses){
 		var header = $("<div />")
 		.attr({"data-role":'header'})
