@@ -1,18 +1,31 @@
 <!DOCTYPE html> 
 <html>
 <head>
-<meta charset="utf-8">
-<title>Lunch</title>
-<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-      <title>AaltoMobile > Lunch</title> 
-      <link rel="stylesheet" href="{{ STATIC_URL }}lunch/css/lunch.css" type="text/css" />
-      <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
-      <script src="http://code.jquery.com/jquery-1.5.min.js"></script>
-      <script src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
+    <meta charset="utf-8" />
+    
+    <!-- viewport -->
+    <meta name="viewport" content="width=device-width">
+    
+    <!-- iOS stuff -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+    
+    <!-- For mobile browsers that do not recognize the viewport tag -->
+    <meta name="MobileOptimized" content="320" />
+
+    <title>AaltoMobile > Lunch</title> 
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}lunch/css/lunch.css" type="text/css" />
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head> 
 <body> 
 
-<div data-role="page" id="campuslist" data-theme="b">
+<div id="campuslist" data-role="page" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
         <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
@@ -32,11 +45,12 @@
 <div data-role="page" id="otaniemi" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch - Otaniemi</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
 	</div>
 <div data-role="content">	
 
     <div data-role="collapsible-set">
-
+		
         <div data-role="collapsible"  data-collapsed="true">
         <h3>Teekkariravintolat</h3>
         <p>Kreikkalaista h&auml;rk&auml;pataa	G M</p>
@@ -123,6 +137,7 @@
 <div data-role="page" id="toolo" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch - Töölö</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
 	</div>
 <div data-role="content">	
 
@@ -161,6 +176,7 @@
 <div data-role="page" id="keskusta" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch - Keskusta</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
 	</div>
 <div data-role="content">	
 
@@ -206,6 +222,7 @@
 <div data-role="page" id="kumpula" data-theme="b">
   <div data-role="header">
     <h1>Lunch - Kumpula</h1>
+    <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
   </div>
   <div data-role="content">
 
@@ -244,6 +261,7 @@
 <div data-role="page" id="arabia" data-theme="b">
   <div data-role="header">
     <h1>Lunch - Arabia</h1>
+    <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
   </div>
   <div data-role="content">
 
@@ -282,6 +300,7 @@
 <div data-role="page" id="viikki" data-theme="b">
   <div data-role="header">
     <h1>Lunch - Viikki</h1>
+    <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
   </div>
   <div data-role="content">
 

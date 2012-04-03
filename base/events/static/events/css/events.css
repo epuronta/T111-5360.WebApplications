@@ -17,9 +17,10 @@
 }
 
 .ui-simpledialog-container p {
+	display:block;
 	font-size:0.8em !important;	
 	margin:5px 2% 10px 2%;
-	text-align:left;
+
 }
 
 .ui-simpledialog-container li {
@@ -29,6 +30,11 @@
 
 .ui-simpledialog-container img  {
 	/*display:none;*/
+	margin-left:auto;
+	margin-right:auto;
+	clear:both;
+	text-align:center;
+	display:block;
 }
 
 .ui-simpledialog-container .remote_url .ui-link {
