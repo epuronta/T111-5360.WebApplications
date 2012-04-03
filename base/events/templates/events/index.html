@@ -49,7 +49,8 @@
 <script>
 
 $(document).ready(function(){
-   	console.log(getEvents(5, 0))
+	var offs = 0;
+   	console.log(getEvents(3, 0))
 	
 	function countSameDates(event, events) {
 		var count = 0;		
@@ -99,6 +100,7 @@ $(document).ready(function(){
 					event = data.events[index];
 					if(index == 0 || compareDates(event, data.events[index-1])) {
 						var count = countSameDates(event, data.events);
+						console.log(count)
 						var divider = $("<li />");
 						var date = createDate(event.start_date);
 						divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + month[date.getMonth()]);
@@ -140,13 +142,17 @@ $(document).ready(function(){
 	function compareDates(evt1, evt2) {
 		d1 = createDate(evt1.start_date);
 		d2 = createDate(evt2.start_date);
+		console.log(d1)
+		console.log(d2)
+		console.log("---")
 		return d1.getTime()-d2.getTime();
 	}
 	
 	function createDate(str) {
 		regex = /(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/;
 		date = regex.exec(str)
-		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
+		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), 0, 0, 0, 0);
+		//return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
 	}
 	
 	$(".eventdialog").live("click", function() {
@@ -171,7 +177,8 @@ $(document).ready(function(){
 	});
 	
 	$('#call_json').bind("click", function() {
-		getEvents(5, 5)
+		offs += 3;
+		getEvents(3, offs)
 	});
 	
 });
