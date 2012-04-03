@@ -58,7 +58,7 @@ class Command(BaseCommand):
 		r.name = self.getdata(restaurant, 'name')
 		print 'Handling %s' % (r.name)
 		
-		r.url = self.getdata(restaurant, 'url')
+		r.external_url = self.getdata(restaurant, 'url')
 		r.info = self.getdata(restaurant, 'info')
 		if not r.info:
 		    r.info = ''

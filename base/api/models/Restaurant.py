@@ -4,7 +4,8 @@ import re
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=200,primary_key=True)
-    url = models.URLField(max_length=1000)
+    external_url = models.URLField(max_length=1000)
+    uri = None # Populated before sending to client, not saved to db
     info = models.CharField(max_length=1000,blank=True,default='')
     campus = models.CharField(max_length=200)
     street_address = models.CharField(max_length=500)
