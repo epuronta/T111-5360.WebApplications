@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 import urllib2
 from datetime import date, timedelta
 import dateutil.parser
+import re
 from xml.dom.minidom import parse
 from django.utils.encoding import smart_unicode
 
@@ -28,6 +29,7 @@ class Command(BaseCommand):
 	
 	dom = parse(handle)
 
+	sanitizer_re = re.compile(r'(style|id|class)="[^"]*"')
 	items = dom.getElementsByTagName('item')
 	for item in items:
 	    e = Event()	    
@@ -40,6 +42,7 @@ class Command(BaseCommand):
 	    
 	    e.title = smart_unicode(self.getdata(item, 'title'))
 	    e.descr = smart_unicode(self.getdata(item, 'description'))
+	    e.descr = sanitizer_re.sub('', e.descr) # Strip style, id, class attrs
 	    
 	    try:
 		e.start_date = dateutil.parser.parse(self.getdata(item, 'xcal:dtstart'))

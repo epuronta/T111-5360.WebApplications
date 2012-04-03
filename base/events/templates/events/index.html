@@ -42,14 +42,14 @@
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">
             </ul>
         </div>
-        
+        <a id="call_json" href="#" data-role="button" data-mini="true" data-corners="false" data-theme="a">Show me more!</a>
     </div>
 </body>
 
 <script>
 
 $(document).ready(function(){
-   	console.log(getEvents(15, 0))
+   	console.log(getEvents(5, 0))
 	
 	function countSameDates(event, events) {
 		var count = 0;		
@@ -128,7 +128,6 @@ $(document).ready(function(){
 							.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"});
 					}
 					$("#list").children("ul").append(container);
-					
 				}
 			$('#eventlist').listview('refresh');
 		}, error: function(jqXHR, textStatus, errorThrown) {
@@ -152,11 +151,11 @@ $(document).ready(function(){
 	
 	$(".eventdialog").live("click", function() {
 		var data = $(this).siblings("span");
-		console.log(data)
+		//console.log(data)
 		var descr = $(data[4]);
-		console.log(descr.children());
+		//console.log(descr.children());
 		var test = $(descr).find('img');
-		console.log(test);	
+		//console.log(test);	
 	
 		var title = data[5];
 		var remote_url = data[14];
@@ -170,6 +169,11 @@ $(document).ready(function(){
 			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
+	
+	$('#call_json').bind("click", function() {
+		getEvents(5, 5)
+	});
+	
 });
 
 </script>
