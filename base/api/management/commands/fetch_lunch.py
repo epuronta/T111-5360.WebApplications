@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 import urllib2
 from datetime import date, timedelta
-import dateutil.parser
 from xml.dom.minidom import parse
 import HTMLParser
 
