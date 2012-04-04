@@ -12,6 +12,7 @@ class Event(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
+    venue = models.CharField(max_length=500)
     street_address = models.CharField(max_length=500)
     city = models.CharField(max_length=500)
     country = models.CharField(max_length=100)
