@@ -1,6 +1,10 @@
 @charset "UTF-8";
 /* CSS Document */
 
+.ui-li-divider {
+	font-size:0.8em !important;
+}
+
 .ui-simpledialog-container div.ui-header {
 	margin:0 !important;
 }
@@ -29,7 +33,6 @@
 }
 
 .ui-simpledialog-container img  {
-	/*display:none;*/
 	margin-left:auto;
 	margin-right:auto;
 	clear:both;
@@ -41,6 +44,13 @@
 	margin-top:15px;
 	color:#096 !important;
 }
+
+div.ui-simpledialog-container div.ui-header {
+	margin-bottom:10px !important;	
+}
+
+
+
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.ui-icon-evt-icon-aalto {

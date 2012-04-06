@@ -25,13 +25,19 @@
 </head> 
 <body> 
 
-<div id="campuslist" data-role="page" data-theme="b">
+<div id="campuslist" data-role="page" data-theme="d">
 	<div data-role="header">
 		<h1>Lunch</h1>
 
         <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
-
+		<div id="tabs" data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="{% url events-index-view %}" data-theme="b" data-prefetch rel="external"><img src="../../static/launcher/img/events.png"/>Events</a></li>
+                <li><a href="{% url lunch-index-view %}" data-theme="e" data-prefetch rel="external"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></li>
+                <li><a class="ui-disabled" href="" data-theme="a" data-prefetch rel="external"><img src="../../static/launcher/img/news.png"/>News</a></li>
+            </ul>
+        </div>
 	</div>
 	<div data-role="content">	
 		<ul data-role="listview">
@@ -77,21 +83,22 @@ $(document).ready(function(){
 		campusHtml.append(header); 
 		
 		$.ajax({
-			url: "http://localhost:8000/api/lunch/search/?campus=" + campus + "&weekday=" + weekday,
+			url: "http://localhost:8000/api/lunch/search/",
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
 				for(index in data.restaurants) {
-					var restaurant = '<h3>' + data.restaurants[index].name + '</h3>';
+					console.log(data.restaurants[index].campus)
+					var restaurant = '<h3>' + data.restaurants[index].campus + '</h3>';
 					restaurant_colset.append("<div data-role='collapsible' data-collapsed='true'>" + restaurant + "</div>")
 					.trigger("create");
 				}
 				
 			content.append(restaurant_colset);
 			campusHtml.append(content);
+			$('body').append(campusHtml)
 			}	
 		})
-		$('body').append(campusHtml)
 	}
 
 		
