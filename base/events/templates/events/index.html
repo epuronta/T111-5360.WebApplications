@@ -32,19 +32,19 @@
     <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
 </head>
 <body>
-	<div id="events" data-role="page" data-theme="d">
+	<div id="events" data-role="page" data-theme="b">
         <header data-role="header">
             <h1>Events</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
             <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
-            <div id="tabs" data-role="navbar" data-iconpos="top">
-                <ul>
-                    <li><a href="{% url events-index-view %}" data-theme="b" data-prefetch rel="external"><img src="../../static/launcher/img/events.png"/>Events</a></li>
-                    <li><a href="{% url lunch-index-view %}" data-theme="e" data-prefetch rel="external"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></li>
-                    <li><a class="ui-disabled" href="" data-theme="a" data-prefetch rel="external"><img src="../../static/launcher/img/news.png"/>News</a></li>
-                </ul>
-            </div>
         </header>
+        <div id="tabs" data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="../../static/launcher/img/events.png"/>Events</a></li>
+                <li><a href="{% url lunch-index-view %}" data-prefetch rel="external"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></li>
+                <li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="../../static/launcher/img/news.png"/>News</a></li>
+            </ul>
+        </div>
         
         <div data-role="content" id="list">
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">

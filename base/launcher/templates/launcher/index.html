@@ -33,14 +33,14 @@
         <header data-role="header">
             <h1>AaltoMobile</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
-            <div id="tabs" data-role="navbar" data-iconpos="top">
-                <ul>
-                    <li><a href="{% url events-index-view %}" data-theme="b" data-prefetch rel="external"><img src="../../static/launcher/img/events.png"/>Events</a></li>
-                    <li><a href="{% url lunch-index-view %}" data-theme="e" data-prefetch rel="external"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></li>
-                    <li><a class="ui-disabled" href="" data-theme="a" data-prefetch rel="external"><img src="../../static/launcher/img/news.png"/>News</a></li>
-                </ul>
-            </div>
         </header>
+        <div id="tabs" data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="{% url events-index-view %}" data-prefetch rel="external"><img src="../../static/launcher/img/events.png"/>Events</a></li>
+                <li><a href="{% url lunch-index-view %}" data-prefetch rel="external"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></li>
+                <li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="../../static/launcher/img/news.png"/>News</a></li>
+            </ul>
+        </div>
         
         <div data-role="content">
             
