@@ -131,9 +131,9 @@ $(document).ready(function(){
 				if(i != 0)
 					prev_date = createDate(events[i-1].start_date);
 				var date = createDate(event.start_date);
-				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()].substr(0,3) + " " + date.getDate() + "." + (date.getMonth()+1));
+				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + (date.getMonth()+1));
 				divider.append(
-					$("<span />").addClass("ui-li-count").text(count)
+					$("<span />").addClass("ui-li-count ui-btn-pos-left").text(count)
 				);
 				var week_no = getWeekNumber(date);
 				if(week_no != getWeekNumber(prev_date)) {
