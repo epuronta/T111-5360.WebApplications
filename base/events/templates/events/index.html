@@ -50,25 +50,37 @@
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">
             </ul>
         </div>
-        <a id="call_json" href="#" data-role="button" data-mini="true" data-corners="false" data-theme="a">Show me more!</a>
+        <!--<a id="call_json" href="#" data-role="button" data-mini="true" data-corners="false" data-theme="a">Show me more!</a>-->
     </div>
 </body>
 
 <script>
 
+$.getDocHeight = function(){
+	var D = document;
+	return Math.max(Math.max(D.body.scrollHeight,D.documentElement.scrollHeight), 
+		Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), 
+		Math.max(D.body.clientHeight, D.documentElement.clientHeight));
+};
+
 $(document).ready(function(){
+	var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
 	var offs = 0;
-	var step = 3;
+	var step = Math.round($.getDocHeight()/80);
+	document.addEventListener("scroll", scrolling, false);
+	//document.addEventListener("touchmove", scrolling, false);
+	//window.onscroll = function() { scrolling(); };
+	//alert(step);
 	getEvents(step,0);
-	
-	
+
 	function getEvents(limit, offset) {
-		
+		//$("#eventlist").append("<p id='loading'>LOADING ...</p>");
 		$.ajax({
 			url: "/api/events/?limit=" + limit + "&offset=" + offset,
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
+				all_found = false;
 				if(!data.events) {
 					console.log("Error, no events in data", data)
 					return;
@@ -99,6 +111,8 @@ $(document).ready(function(){
 				data.events.sort(compareDates);
 				displayEvents(data.events, weekday, month);
 		}, error: function(jqXHR, textStatus, errorThrown) {
+			//$('#loading').remove();
+			all_found = true;
 			console.log(jqXHR, textStatus, errorThrown);
 		}
 		});
@@ -140,7 +154,8 @@ $(document).ready(function(){
 			}
 			$("#list").children("ul").append(container);
 		}
-		$('#eventlist').listview('refresh');	
+		$('#eventlist').listview('refresh');
+		//$('#loading').remove();	
 	}
 	
 	function countSameDates(event, events) {
@@ -164,6 +179,14 @@ $(document).ready(function(){
 		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), 0, 0, 0, 0);
 	}
 	
+	function scrolling() {
+		var y0 = $(document).height() - $(window).height()
+		var y0_ios = $.getDocHeight() - window.innerHeight;
+		if(!all_found && ($(window).scrollTop() == y0 || window.pageYOffset == y0_ios)) {
+           	offs += step;
+			getEvents(step, offs)
+        }
+	}
 	
 	$(".eventdialog").live("click", function() {
 		var descr = $(this).siblings("span.descr");
@@ -173,18 +196,18 @@ $(document).ready(function(){
 		$('<div>').simpledialog2({
 			mode: 'blank',
 			top: 0,
-			headerText: $(title).text().substr(0,10),
+			headerText: title.text().substr(0,10),
 			headerClose: true,
-			blankContent : $(descr).text() +
-			"<p class='remote_url'><a href=" + $(remote_url).text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
+			blankContent : descr.text() +
+			"<p class='remote_url'><a href=" + remote_url.text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
 			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
 	
-	$('#call_json').bind("click", function() {
+	/*$('#call_json').bind("click", function() {
 		offs += step;
 		getEvents(step, offs)
-	});
+	});*/
 	
 });
 
