@@ -1,8 +1,16 @@
 @charset "UTF-8";
 /* CSS Document */
 
+.week-divider {
+	font-size:0.7em !important;
+	text-align:center !important;
+	padding:2px !important;
+	opacity:0.75;
+}
+
 .ui-li-divider {
 	font-size:0.8em !important;
+	padding:6px !important;
 }
 
 .ui-simpledialog-container div.ui-header {

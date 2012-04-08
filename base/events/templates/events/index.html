@@ -63,15 +63,17 @@ $.getDocHeight = function(){
 		Math.max(D.body.clientHeight, D.documentElement.clientHeight));
 };
 
+
 $(document).ready(function(){
 	var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
 	var offs = 0;
-	var step = Math.round($.getDocHeight()/80);
+	// step defines how many events to get per request, 40px == the average height of an event li tag 
+	var step = Math.round($.getDocHeight()*0.85/40); 
+	
 	document.addEventListener("scroll", scrolling, false);
 	//document.addEventListener("touchmove", scrolling, false);
 	//window.onscroll = function() { scrolling(); };
-	//alert(step);
-	getEvents(step,0);
+	getEvents(999999999,0);
 
 	function getEvents(limit, offset) {
 		//$("#eventlist").append("<p id='loading'>LOADING ...</p>");
@@ -120,16 +122,28 @@ $(document).ready(function(){
 	
 	function displayEvents(events, weekday, month) {
 		
-		for(index in events) {
-			event = events[index];
-			if(index == 0 || compareDates(event, events[index-1])) {
+		for(var i = 0; i < events.length; i++) {
+			event = events[i];
+			if(i == 0 || compareDates(event, events[i-1])) {
 				var count = countSameDates(event, events);
 				var divider = $("<li />");
+				prev_date = new Date();
+				if(i != 0)
+					prev_date = createDate(events[i-1].start_date);
 				var date = createDate(event.start_date);
-				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + month[date.getMonth()]);
+				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()].substr(0,3) + " " + date.getDate() + "." + (date.getMonth()+1));
 				divider.append(
 					$("<span />").addClass("ui-li-count").text(count)
 				);
+				var week_no = getWeekNumber(date);
+				if(week_no != getWeekNumber(prev_date)) {
+					$("#list").children("ul").append(
+						$("<li />")
+							.attr("data-theme","a")
+							.addClass("week-divider")
+							.text("Week " + week_no)
+						);
+				}
 				$("#list").children("ul").append(divider);
 			}
 			var container = $("<li />");
@@ -182,11 +196,44 @@ $(document).ready(function(){
 	function scrolling() {
 		var y0 = $(document).height() - $(window).height()
 		var y0_ios = $.getDocHeight() - window.innerHeight;
-		if(!all_found && ($(window).scrollTop() == y0 || window.pageYOffset == y0_ios)) {
-           	offs += step;
-			getEvents(step, offs)
+		if(!all_found && ($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios)) {
+           	//offs += step;
+			//getEvents(step, offs)
+			
         }
 	}
+	
+	/* For a given date, get the ISO week number
+	 *
+	 * Based on information at:
+	 *
+	 *    http://www.merlyn.demon.co.uk/weekcalc.htm#WNR
+	 *
+	 * Algorithm is to find nearest thursday, it's year
+	 * is the year of the week number. Then get weeks
+	 * between that date and the first day of that year.
+	 *
+	 * Note that dates in one year can be weeks of previous
+	 * or next year, overlap is up to 3 days.
+	 *
+	 * e.g. 2014/12/29 is Monday in week  1 of 2015
+	 *      2012/1/1   is Sunday in week 52 of 2011
+	 */
+	function getWeekNumber(d) {
+		// Copy date so don't modify original
+		d = new Date(d);
+		d.setHours(0,0,0);
+		// Set to nearest Thursday: current date + 4 - current day number
+		// Make Sunday's day number 7
+		d.setDate(d.getDate() + 4 - (d.getDay()||7));
+		// Get first day of year
+		var yearStart = new Date(d.getFullYear(),0,1);
+		// Calculate full weeks to nearest Thursday
+		var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+		// Return array of year and week number
+		return weekNo;
+	}
+
 	
 	$(".eventdialog").live("click", function() {
 		var descr = $(this).siblings("span.descr");
