@@ -40,9 +40,9 @@
         </header>
         <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
-                <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="../../static/launcher/img/events.png"/>Events</a></li>
-                <li><a href="{% url lunch-index-view %}" data-prefetch rel="external"><img src="../../static/launcher/img/lunch.png"/>Lunch</a></li>
-                <li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="../../static/launcher/img/news.png"/>News</a></li>
+                <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
+                <li><a href="{% url lunch-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/lunch.png"/>Lunch</a></li>
+                <li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/news.png"/>News</a></li>
             </ul>
         </div>
         
@@ -68,7 +68,7 @@ $(document).ready(function(){
 	var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
 	var offs = 0;
 	// step defines how many events to get per request, 40px == the average height of an event li tag 
-	var step = Math.round($.getDocHeight()*0.85/40); 
+	//var step = Math.round($.getDocHeight()*0.85/40); 
 	
 	//document.addEventListener("scroll", scrolling, false);
 	//document.addEventListener("touchmove", scrolling, false);
@@ -76,7 +76,7 @@ $(document).ready(function(){
 	getEvents(999999999,0);
 
 	function getEvents(limit, offset) {
-		$("#eventlist").append("<p id='loading'>LOADING ...</p>");
+		$("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
 		$.ajax({
 			url: "/api/events/?limit=" + limit + "&offset=" + offset,
 			type: "GET",
@@ -113,7 +113,7 @@ $(document).ready(function(){
 				data.events.sort(compareDates);
 				displayEvents(data.events, weekday, month);
 		}, error: function(jqXHR, textStatus, errorThrown) {
-			//$('#loading').remove();
+			$('#loading').remove();
 			all_found = true;
 			console.log(jqXHR, textStatus, errorThrown);
 		}
@@ -146,14 +146,12 @@ $(document).ready(function(){
 			}
 			var container = $("<li />");
 			var start_time = createDate(event.start_date).getHours();
-			if(start_time != 0)
-				start_time = start_time + ":00 ";
-			else
-				start_time = "";	
+			start_time = formatStartTime(start_time);
 			container.append($("<a />")
 				.attr({"href":"#","data-role":"button"})
 				.addClass("eventdialog")
-				.text(start_time + event.title.substr(12))
+				.append("<span style='color:#CC3300'>" + start_time + "</span>" + event.title.substr(12))
+				
 			);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
@@ -221,6 +219,17 @@ $(document).ready(function(){
 			return days_left + " days"
 	}
 	
+	function formatStartTime(time) {
+		if(time != 0)
+			time = time + ":00 ";
+		else
+			return time = "";
+		console.log(time.length)	
+		if(time.length != 6)
+			time = "0" + time;
+		return time;
+	}	
+	
 	/*function scrolling() {
 		var y0 = $(document).height() - $(window).height()
 		var y0_ios = $.getDocHeight() - window.innerHeight;
@@ -230,27 +239,6 @@ $(document).ready(function(){
         }
 	}*/
 	
-	$(".eventdialog").live("click", function() {
-		var descr = $(this).siblings("span.descr");
-		var title = $(this).siblings("span.title");
-		var remote_url = $(this).siblings("span.remote_url");
-		var start_date = $(this).siblings("span.start_date").text();
-		var days_left = getDaysTillEvent(start_date);
-		$('<div>').simpledialog2({
-			mode: 'blank',
-			top: 0,
-			headerText: title.text().substr(0,10) + " (" + days_left +")",
-			headerClose: true,
-			blankContent : descr.text() +
-			"<p class='remote_url'><a href=" + remote_url.text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
-			"<a rel='close' data-role='button' href='#'>Close</a>"
-		});
-	});
-	
-	/*$('#call_json').bind("click", function() {
-		offs += step;
-		getEvents(step, offs)
-	});*/
 	
 	/* For a given date, get the ISO week number
 	 *
@@ -282,6 +270,29 @@ $(document).ready(function(){
 		// Return array of year and week number
 		return weekNo;
 	}
+	
+	$(".eventdialog").live("click", function() {
+		var descr = $(this).siblings("span.descr");
+		var title = $(this).siblings("span.title");
+		var remote_url = $(this).siblings("span.remote_url");
+		var start_date = $(this).siblings("span.start_date").text();
+		var days_left = getDaysTillEvent(start_date);
+		$('<div>').simpledialog2({
+			mode: 'blank',
+			top: 0,
+			headerText: title.text().substr(0,10) + " (" + days_left +")",
+			headerClose: true,
+			blankContent : descr.text() +
+			"<p class='remote_url'><a href=" + remote_url.text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
+			"<a rel='close' data-role='button' href='#'>Close</a>"
+		});
+	});
+	
+	/*$('#call_json').bind("click", function() {
+		offs += step;
+		getEvents(step, offs)
+	});*/
+	
 });
 
 </script>

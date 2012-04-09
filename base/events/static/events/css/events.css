@@ -1,9 +1,10 @@
 @charset "UTF-8";
 /* CSS Document */
 
-#loading {
-	margin-left:auto;
-	margin-right:auto;	
+#loading img {
+	position:relative;
+	margin: 30px auto 20px auto;
+	display:block;
 }
 
 .week-divider {
