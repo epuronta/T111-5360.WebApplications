@@ -1,6 +1,11 @@
 @charset "UTF-8";
 /* CSS Document */
 
+#loading {
+	margin-left:auto;
+	margin-right:auto;	
+}
+
 .week-divider {
 	font-size:0.7em !important;
 	text-align:center !important;
@@ -29,7 +34,7 @@
 
 .ui-simpledialog-container h1, h2, h3 {
 	font-size:1em;	
-	margin: auto 1% 15px 1%
+	margin: 12px 1% 10px 1% !important;
 }
 
 .ui-simpledialog-container p {
