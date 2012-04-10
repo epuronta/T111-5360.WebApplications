@@ -144,15 +144,17 @@ $(document).ready(function(){
 			}
 			var container = $("<li />");
 			var start_time = createDate(event.start_date).getHours();
-			start_time = formatStartTime(start_time);
+			title = formatTitle(event.title);
+			start_time = formatTime(start_time)
 			container
 				.addClass("eventdialog")
 				.append(
 					$("<span />")
 						.attr("style","color:#CC3300")
-						.text(start_time))
+						.text(start_time)
+						)
 				.append(
-					$("<span />").text(" " + event.title)
+					$("<span />").text(" " + title)
 				);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
@@ -225,16 +227,21 @@ $(document).ready(function(){
 			return days_left + " days"
 	}
 	
-	function formatStartTime(time) {
-		
+	function formatTitle(title) {
+		regex = /(\d{2}\.\d{2}\.\d{4}: )?(.+[^( \( \d.\d.\d{4} \))])/;
+		title = regex.exec(title)
+		return title[2]
+	}
+	
+	function formatTime(time) {
 		if(time != 0)
 			time = time + ":00";
 		else
 			return time = "";
 		if(time.length != 5)
 			time = "0" + time;
-		return time;
-	}	
+		return time
+	}
 	
 	
 	function scrolling() {
