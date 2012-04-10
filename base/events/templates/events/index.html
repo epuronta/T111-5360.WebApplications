@@ -147,7 +147,7 @@ $(document).ready(function(){
 			start_time = formatStartTime(start_time);
 			container
 				.addClass("eventdialog")
-				.append("<span style='color:#CC3300'>" + start_time + "</span>" + event.title.substr(12)
+				.append("<span style='color:#CC3300'>" + start_time + "</span> " + event.title.substr(12)
 			);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
@@ -222,7 +222,7 @@ $(document).ready(function(){
 	
 	function formatStartTime(time) {
 		if(time != 0)
-			time = time + ":00 ";
+			time = time + ":00";
 		else
 			return time = "";
 		if(time.length != 6)
