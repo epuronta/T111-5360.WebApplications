@@ -35,12 +35,12 @@
 	</div>
 	<div data-role="content">	
 		<ul data-role="listview">
-			<li><a href="#0">Otaniemi</a></li>
-            <li><a href="#1">Töölö</a></li>
-			<li><a href="#2">Keskusta</a></li>
-            <li><a href="#3">Kumpula</a></li>
-            <li><a href="#4">Arabia</a></li>
-            <li><a href="#5">Viikki</a></li>
+			<li><a href="#Otaniemi">Otaniemi</a></li>
+            <li><a href="#Toolo">Töölö</a></li>
+			<li><a href="#Keskusta">Keskusta</a></li>
+            <li><a href="#Kumpula">Kumpula</a></li>
+            <li><a href="#Arabia">Arabia</a></li>
+            <li><a href="#Viikki">Viikki</a></li>
 		</ul>		
 	</div><!-- /content -->
 </div><!-- /page -->
@@ -51,6 +51,7 @@
 <script>
 	
 	var campuses = new Array("Otaniemi","Töölö","Keskusta","Kumpula","Arabia","Viikki");
+	var campus_urls = new Array("Otaniemi","Toolo","Keskusta","Kumpula","Arabia","Viikki");
 	var launcherUrl = "{% url launcher-index-view %}";
 	var d = new Date();
 	var weekday = d.getDay();
@@ -77,7 +78,7 @@
 					}
 					campus_content.append(campus_restaurants)
 					campus_page
-						.attr("id",campus)
+						.attr("id",campus_urls[campus])
 						.append(campus_header.append('<h1>' + campuses[campus] + '</h1>'))
 						.append(campus_content)
 					$('body').append(campus_page)
@@ -92,9 +93,8 @@
 			var urlObj = $.mobile.path.parseUrl( data.toPage )
 			pageSelector = urlObj.hash.replace( /\?.*$/, "" );
 			var $page = $( pageSelector )
-			console.log($page)
 			$page.page();
-			data.options.dataUrl = urlObj.href;
+			data.options.dataUrl = pageSelector;
 			$.mobile.changePage( $page, data.options );
 			e.preventDefault()
 		}
