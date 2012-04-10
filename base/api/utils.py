@@ -43,8 +43,8 @@ def obj_to_json(obj):
         output += '"%s":"%s"' % (attr, dataval)
 
     # Class-specific urls
-    if isinstance(obj, Event) and obj.id:
-	output += ',"uri":"%s"' % (reverse('event-detail-view', args=[obj.id]))
+    #if isinstance(obj, Event) and obj.id:
+	#output += ',"uri":"%s"' % (reverse('event-detail-view', args=[obj.id]))
     
     output += '}'
     return output

@@ -23,87 +23,91 @@
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head> 
-<body> 
 
+<body>
 <div id="campuslist" data-role="page" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
 
         <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
-	</div>
-    <div id="tabs" data-role="navbar" data-iconpos="top">
-        <ul>
-            <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
-            <li><a href="{% url lunch-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/lunch.png"/>Lunch</a></li>
-        	<li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/news.png"/>News</a></li>
-        </ul>
-    </div>
 
-	<div data-role="content" data-theme="c">	
+	</div>
+	<div data-role="content">	
 		<ul data-role="listview">
-			<li><a href="#otaniemi">Otaniemi</a></li>
-            <li><a href="#toolo">Töölö</a></li>
-			<li><a href="#keskusta">Keskusta</a></li>
-            <li><a href="#kumpula">Kumpula</a></li>
-            <li><a href="#arabia">Arabia</a></li>
-            <li><a href="#viikki">Viikki</a></li>
+			<li><a href="#0">Otaniemi</a></li>
+            <li><a href="#1">Töölö</a></li>
+			<li><a href="#2">Keskusta</a></li>
+            <li><a href="#3">Kumpula</a></li>
+            <li><a href="#4">Arabia</a></li>
+            <li><a href="#5">Viikki</a></li>
 		</ul>		
 	</div><!-- /content -->
 </div><!-- /page -->
+
 </body>
 
 
 <script>
-$(document).ready(function(){
 	
-	var campuses = new Array("Otaniemi","Toolo","Keskusta","Kumpula","Arabia","Viikki");
+	var campuses = new Array("Otaniemi","Töölö","Keskusta","Kumpula","Arabia","Viikki");
 	var launcherUrl = "{% url launcher-index-view %}";
 	var d = new Date();
 	var weekday = d.getDay();
-			
-	var content = $("<div />")
-		.attr({'data-role':'content'})
 		
-	var restaurant_colset = $("<div />")
-		.attr({"data-role":'collapsible-set'})
-	
-
-	for(campus in campuses){
-		var header = $("<div />")
-		.attr({"data-role":'header'})
-		.append($("<h1 />")
-			.text('Lunch - ' + campus)
-			)
-		.append($("<a />")
-			.attr({"href":launcherUrl,"data-role":'button',"data-icon":'home',"data-iconpos":'notext',"class":'ui-btn-right'})
-			.text('Home')
-			)		
-		var campusHtml = $("<div />")
-	 		.attr({"data-role":'page',"id":campus,"data-theme":'b'});
-		campusHtml.append(header); 
-		
+	$(document).ready(function(event) {
 		$.ajax({
-			url: "http://localhost:8000/api/lunch/search/",
+			url: "http://localhost:8000/api/lunch/search/?weekday=" + weekday,
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
-				for(index in data.restaurants) {
-					console.log(data.restaurants[index].campus)
-					var restaurant = '<h3>' + data.restaurants[index].campus + '</h3>';
-					restaurant_colset.append("<div data-role='collapsible' data-collapsed='true'>" + restaurant + "</div>")
-					.trigger("create");
+				for(campus in campuses){
+					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b'})
+					var campus_header = $("<div />").attr({"data-role":'header'})
+					var campus_content = $("<div />").attr({"data-role":'content'})
+					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set'})
+					for(restaurant in data.restaurants) {
+						if(data.restaurants[restaurant].campus == campuses[campus]) {
+							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true'})
+							campus_restaurant.append('<h3>' + data.restaurants[restaurant].name + '</h3>')
+							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
+							campus_restaurant.append(lunch_data);
+							campus_restaurants.append(campus_restaurant);
+						}
+					}
+					campus_content.append(campus_restaurants)
+					campus_page
+						.attr("id",campus)
+						.append(campus_header.append('<h1>' + campuses[campus] + '</h1>'))
+						.append(campus_content)
+					$('body').append(campus_page)
 				}
-				
-			content.append(restaurant_colset);
-			campusHtml.append(content);
-			$('body').append(campusHtml)
 			}	
 		})
+	});
+	
+	$(document).bind( "pagebeforechange", function( e, data ) {
+		// http://jquerymobile.com/test/docs/pages/page-dynamic.html
+		if ( typeof data.toPage === "string" ) {
+			var urlObj = $.mobile.path.parseUrl( data.toPage )
+			pageSelector = urlObj.hash.replace( /\?.*$/, "" );
+			var $page = $( pageSelector )
+			console.log($page)
+			$page.page();
+			data.options.dataUrl = urlObj.href;
+			$.mobile.changePage( $page, data.options );
+			e.preventDefault()
+		}
+	});
+	
+	function getLunchLists(restaurant_name,lunchlists) {
+		var lunch_data = "Lounastietoja ei saatavilla.";
+		for(lunchlist in lunchlists) {
+			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
+				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+		}
+		return lunch_data
 	}
-
-		
-});
-
+	
 </script>
 </html>
