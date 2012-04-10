@@ -57,6 +57,7 @@ def list_events(request):
 
 
 # Returns event (normally a single one) with given event id or 404
+'''
 def single_event(request, event_id):
     event = Event.objects.filter(id=event_id)
     if not event:
@@ -66,7 +67,7 @@ def single_event(request, event_id):
     output += objs_to_json(event, 'events')
     output += '}'
     return HttpResponse(output, content_type='application/json;charset=utf-8')
-    
+'''    
     
 def get_campuses(request):
     
