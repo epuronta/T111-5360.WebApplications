@@ -1,2 +1,6 @@
 @charset "UTF-8";
 /* CSS Document */
+
+.testi span {
+	font-size:1.0em !important;	
+}

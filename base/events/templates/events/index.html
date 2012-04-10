@@ -147,8 +147,13 @@ $(document).ready(function(){
 			start_time = formatStartTime(start_time);
 			container
 				.addClass("eventdialog")
-				.append("<span style='color:#CC3300'>" + start_time + "</span> " + event.title.substr(12)
-			);
+				.append(
+					$("<span />")
+						.attr("style","color:#CC3300")
+						.text(start_time))
+				.append(
+					$("<span />").text(" " + event.title)
+				);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
 				icon = "evt-icon-aalto"
@@ -221,24 +226,25 @@ $(document).ready(function(){
 	}
 	
 	function formatStartTime(time) {
+		
 		if(time != 0)
 			time = time + ":00";
 		else
 			return time = "";
-		if(time.length != 6)
+		if(time.length != 5)
 			time = "0" + time;
 		return time;
 	}	
 	
 	
-	/*function scrolling() {
+	function scrolling() {
 		var y0 = $(document).height() - $(window).height()
 		var y0_ios = $.getDocHeight() - window.innerHeight;
 		if(!all_found && ($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios)) {
            	offs += step;
 			getEvents(step, offs)
         }
-	}*/
+	}
 	
 	
 	//testing data types accurately in JavaScript (opposed to "typeof")
