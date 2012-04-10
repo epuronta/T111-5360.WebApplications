@@ -65,8 +65,8 @@ $.getDocHeight = function(){
 
 
 $(document).ready(function(){
-	var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
-	var offs = 0;
+	//var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
+	//var offs = 0;
 	// step defines how many events to get per request, 40px == the average height of an event li tag 
 	//var step = Math.round($.getDocHeight()*0.85/40); 
 	
@@ -82,54 +82,52 @@ $(document).ready(function(){
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
-				all_found = false;
+				//all_found = false;
 				if(!data.events) {
 					console.log("Error, no events in data", data)
 					return;
 				}
-				var weekday=new Array(7);
-				weekday[0]="Sunday";
-				weekday[1]="Monday";
-				weekday[2]="Tuesday";
-				weekday[3]="Wednesday";
-				weekday[4]="Thursday";
-				weekday[5]="Friday";
-				weekday[6]="Saturday";
-				
-				var month=new Array(12);
-				month[0]="January";
-				month[1]="February";
-				month[2]="March";
-				month[3]="April";
-				month[4]="May";
-				month[5]="June";
-				month[6]="July";
-				month[7]="August";
-				month[8]="September";
-				month[9]="October";
-				month[10]="November";
-				month[11]="December";
-				
 				data.events.sort(compareDates);
-				displayEvents(data.events, weekday, month);
+				displayEvents(data.events);
 		}, error: function(jqXHR, textStatus, errorThrown) {
 			$('#loading').remove();
-			all_found = true;
+			//all_found = true;
 			console.log(jqXHR, textStatus, errorThrown);
 		}
 		});
 	}
 	
-	function displayEvents(events, weekday, month) {
+	function displayEvents(events) {
+		var weekday=new Array(7);
+		weekday[0]="Sunday";
+		weekday[1]="Monday";
+		weekday[2]="Tuesday";
+		weekday[3]="Wednesday";
+		weekday[4]="Thursday";
+		weekday[5]="Friday";
+		weekday[6]="Saturday";
 		
+		var month=new Array(12);
+		month[0]="January";
+		month[1]="February";
+		month[2]="March";
+		month[3]="April";
+		month[4]="May";
+		month[5]="June";
+		month[6]="July";
+		month[7]="August";
+		month[8]="September";
+		month[9]="October";
+		month[10]="November";
+		month[11]="December";
 		for(var i = 0; i < events.length; i++) {
 			event = events[i];
 			if(i == 0 || compareDates(event, events[i-1])) {
 				var count = countSameDates(event, events);
 				var divider = $("<li />");
-				prev_date = new Date();
-				if(i != 0)
-					prev_date = createDate(events[i-1].start_date);
+				//prev_date = new Date();
+				/*if(i != 0)
+					prev_date = createDate(events[i-1].start_date);*/
 				var date = createDate(event.start_date);
 				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + (date.getMonth()+1))
 				divider.append($("<span />").addClass("ui-li-count").text(count));
@@ -147,11 +145,9 @@ $(document).ready(function(){
 			var container = $("<li />");
 			var start_time = createDate(event.start_date).getHours();
 			start_time = formatStartTime(start_time);
-			container.append($("<a />")
-				.attr({"href":"#","data-role":"button"})
+			container
 				.addClass("eventdialog")
-				.append("<span style='color:#CC3300'>" + start_time + "</span>" + event.title.substr(12))
-				
+				.append("<span style='color:#CC3300'>" + start_time + "</span>" + event.title.substr(12)
 			);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
@@ -183,31 +179,36 @@ $(document).ready(function(){
 	}
 	
 	function compareDates(evt1, evt2) {
-		d1 = createDate(evt1.start_date, 3);
-		d2 = createDate(evt2.start_date, 3);
+		d1 = createDate(evt1.start_date);
+		d2 = createDate(evt2.start_date);
+		d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(),0,0,0,0);
+		d2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(),0,0,0,0);
 		var one_day=1000*60*60*24;
 		return Math.ceil(d1.getTime()/(one_day))-Math.ceil(d2.getTime()/(one_day));
 	}
 	
-	function compareDatesString(str1, str2) {
-		d1 = createDate(str1, 3);
-		d2 = createDate(str2, 3);
+	function compareDatesString(d1, d2) {
+		if(!is('Date',d1)) {
+			d1 = createDate(d1);
+			d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(),0,0,0,0);
+		}
+		if(!is('Date',d2)) {
+			d2 = createDate(d2);
+			d2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(),0,0,0,0);
+		}
 		var one_day=1000*60*60*24;
 		return Math.ceil(d1.getTime()/(one_day))-Math.ceil(d2.getTime()/(one_day));
 	}
 	
-	function createDate(str, precision) {
+	function createDate(str) {
 		regex = /(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/;
 		date = regex.exec(str)
-		if(precision == 3)
-			return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), 0, 0, 0, 0);
-		else
-			return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
+		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
 	}
 	
 	function getDaysTillEvent(event_date) {
 		var today = new Date();
-		today = today.getFullYear() + "-0" + (today.getMonth()+1) + "-0" + today.getDate() + " 00:00:00";
+		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
 		var days_left = -compareDatesString(today, event_date);
 		if(days_left < 0)
 			return "past"
@@ -224,11 +225,11 @@ $(document).ready(function(){
 			time = time + ":00 ";
 		else
 			return time = "";
-		console.log(time.length)	
 		if(time.length != 6)
 			time = "0" + time;
 		return time;
 	}	
+	
 	
 	/*function scrolling() {
 		var y0 = $(document).height() - $(window).height()
@@ -239,6 +240,14 @@ $(document).ready(function(){
         }
 	}*/
 	
+	
+	//testing data types accurately in JavaScript (opposed to "typeof")
+	//from http://bonsaiden.github.com/JavaScript-Garden/
+	function is(type, obj) {
+		var clas = Object.prototype.toString.call(obj).slice(8, -1);
+		return obj !== undefined && obj !== null && clas === type;
+	}
+		
 	
 	/* For a given date, get the ISO week number
 	 *
@@ -272,10 +281,10 @@ $(document).ready(function(){
 	}
 	
 	$(".eventdialog").live("click", function() {
-		var descr = $(this).siblings("span.descr");
-		var title = $(this).siblings("span.title");
-		var remote_url = $(this).siblings("span.remote_url");
-		var start_date = $(this).siblings("span.start_date").text();
+		var descr = $(this).children("span.descr");
+		var title = $(this).children("span.title");
+		var remote_url = $(this).children("span.remote_url");
+		var start_date = $(this).children("span.start_date").text();
 		var days_left = getDaysTillEvent(start_date);
 		$('<div>').simpledialog2({
 			mode: 'blank',
