@@ -55,7 +55,7 @@ class Command(BaseCommand):
 	    for restaurant in restaurants:
 		r = Restaurant()
 		r.name = self.getdata(restaurant, 'name')
-		print 'Handling %s' % (r.name)
+		print '\tHandling %s' % (r.name)
 		
 		r.external_url = self.getdata(restaurant, 'url')
 		r.info = self.getdata(restaurant, 'info')
@@ -115,7 +115,13 @@ class Command(BaseCommand):
 			l.restaurant = r
 			l.weekday = i+1
 			
-			l.lunch = ''.join('<li>' + htmlparser.unescape(n.firstChild.nodeValue).strip() + '</li>' for n in node.childNodes)
+			nodes = []
+			for n in node.childNodes:
+                            val = htmlparser.unescape(n.firstChild.nodeValue).strip()
+                            if val and val != '':
+                                l.lunch = l.lunch + '<li>%s</li>' % val
+                        # Too complex syntax, replaced with for above for readability
+			#l.lunch = ''.join('<li>' + htmlparser.unescape(n.firstChild.nodeValue).strip() + '</li>' for n in node.childNodes)
 			#print l.lunch
 			
 			if l.lunch == '':
