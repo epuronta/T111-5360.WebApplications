@@ -36,32 +36,68 @@
         <header data-role="header">
             <h1>Events</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+            <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
         </header>
+        <div id="tabs" data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
+                <li><a href="{% url lunch-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/lunch.png"/>Lunch</a></li>
+                <li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/news.png"/>News</a></li>
+            </ul>
+        </div>
         
         <div data-role="content" id="list">
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">
             </ul>
         </div>
-        <a id="call_json" href="#" data-role="button" data-mini="true" data-corners="false" data-theme="a">Show me more!</a>
+        <!--<a id="call_json" href="#" data-role="button" data-mini="true" data-corners="false" data-theme="a">Show me more!</a>-->
     </div>
 </body>
 
 <script>
 
+$.getDocHeight = function(){
+	var D = document;
+	return Math.max(Math.max(D.body.scrollHeight,D.documentElement.scrollHeight), 
+		Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), 
+		Math.max(D.body.clientHeight, D.documentElement.clientHeight));
+};
+
+
 $(document).ready(function(){
-	var offs = 0;
-   	console.log(getEvents(3, 0))
+	//var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
+	//var offs = 0;
+	// step defines how many events to get per request, 40px == the average height of an event li tag 
+	//var step = Math.round($.getDocHeight()*0.85/40); 
 	
-	function countSameDates(event, events) {
-		var count = 0;		
-		for(index in events) {
-			if(!compareDates(event, events[index]))
-				count++;
+	//document.addEventListener("scroll", scrolling, false);
+	//document.addEventListener("touchmove", scrolling, false);
+	//window.onscroll = function() { scrolling(); };
+	getEvents(999999999,0);
+
+	function getEvents(limit, offset) {
+		$("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
+		$.ajax({
+			url: "/api/events/?limit=" + limit + "&offset=" + offset,
+			type: "GET",
+			dataType: "json",
+			success: function(data) {
+				//all_found = false;
+				if(!data.events) {
+					console.log("Error, no events in data", data)
+					return;
+				}
+				data.events.sort(compareDates);
+				displayEvents(data.events);
+		}, error: function(jqXHR, textStatus, errorThrown) {
+			$('#loading').remove();
+			//all_found = true;
+			console.log(jqXHR, textStatus, errorThrown);
 		}
-		return count;
+		});
 	}
 	
-	function getEvents(limit, offset) {
+	function displayEvents(events) {
 		var weekday=new Array(7);
 		weekday[0]="Sunday";
 		weekday[1]="Monday";
@@ -84,102 +120,187 @@ $(document).ready(function(){
 		month[9]="October";
 		month[10]="November";
 		month[11]="December";
-		
-		$.ajax({
-			url: "/api/events/?limit=" + limit + "&offset=" + offset,
-			type: "GET",
-			dataType: "json",
-			success: function(data) {
-				if(!data.events) {
-					console.log("Error, no events in data", data)
-					return;
-				}
-				
-				data.events.sort(compareDates);
-				for(index in data.events) {
-					event = data.events[index];
-					if(index == 0 || compareDates(event, data.events[index-1])) {
-						var count = countSameDates(event, data.events);
-						console.log(count)
-						var divider = $("<li />");
-						var date = createDate(event.start_date);
-						divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + month[date.getMonth()]);
-						divider.append(
-							$("<span />").addClass("ui-li-count").text(count)
+		for(var i = 0; i < events.length; i++) {
+			event = events[i];
+			if(i == 0 || compareDates(event, events[i-1])) {
+				var count = countSameDates(event, events);
+				var divider = $("<li />");
+				//prev_date = new Date();
+				/*if(i != 0)
+					prev_date = createDate(events[i-1].start_date);*/
+				var date = createDate(event.start_date);
+				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + (date.getMonth()+1))
+				divider.append($("<span />").addClass("ui-li-count").text(count));
+				/*var week_no = getWeekNumber(date);
+				if(week_no != getWeekNumber(prev_date)) {
+					$("#list").children("ul").append(
+						$("<li />")
+							.attr("data-theme","a")
+							.addClass("week-divider")
+							.text("Week " + week_no)
 						);
-						$("#list").children("ul").append(divider);
-					}
-					var container = $("<li />");
-					container.append($("<a />")
-						.attr({"href":"#","data-role":"button"})
-						.addClass("eventdialog")
-						.text(event.title.substr(12))
-					);
-					var icon = "false"
-					if(event.remote_source_name == "AaltoEvents")
-						icon = "evt-icon-aalto"
-					for(prop in event) {
-						container
-							.append(
-								$("<span />")
-									.addClass(prop)
-									.addClass("property")
-									.addClass("hidden")
-									.text(event[prop])
-								)
-							.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"});
-					}
-					$("#list").children("ul").append(container);
-				}
-			$('#eventlist').listview('refresh');
-		}, error: function(jqXHR, textStatus, errorThrown) {
-			console.log(jqXHR, textStatus, errorThrown);
+				}*/
+				$("#list").children("ul").append(divider);
+			}
+			var container = $("<li />");
+			var start_time = createDate(event.start_date).getHours();
+			start_time = formatStartTime(start_time);
+			container
+				.addClass("eventdialog")
+				.append("<span style='color:#CC3300'>" + start_time + "</span>" + event.title.substr(12)
+			);
+			var icon = "false"
+			if(event.remote_source_name == "AaltoEvents")
+				icon = "evt-icon-aalto"
+			for(prop in event) {
+				container
+					.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"})
+					.append(
+						$("<span />")
+							.addClass(prop)
+							.addClass("property")
+							.addClass("hidden")
+							.text(event[prop])
+						);
+			}
+			$("#list").children("ul").append(container);
 		}
-		});
-		return true;
+		$('#eventlist').listview('refresh');
+		$('#loading').remove();	
+	}
+	
+	function countSameDates(event, events) {
+		var count = 0;		
+		for(index in events) {
+			if(!compareDates(event, events[index]))
+				count++;
+		}
+		return count;
 	}
 	
 	function compareDates(evt1, evt2) {
 		d1 = createDate(evt1.start_date);
 		d2 = createDate(evt2.start_date);
-		console.log(d1)
-		console.log(d2)
-		console.log("---")
-		return d1.getTime()-d2.getTime();
+		d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(),0,0,0,0);
+		d2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(),0,0,0,0);
+		var one_day=1000*60*60*24;
+		return Math.ceil(d1.getTime()/(one_day))-Math.ceil(d2.getTime()/(one_day));
+	}
+	
+	function compareDatesString(d1, d2) {
+		if(!is('Date',d1)) {
+			d1 = createDate(d1);
+			d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(),0,0,0,0);
+		}
+		if(!is('Date',d2)) {
+			d2 = createDate(d2);
+			d2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(),0,0,0,0);
+		}
+		var one_day=1000*60*60*24;
+		return Math.ceil(d1.getTime()/(one_day))-Math.ceil(d2.getTime()/(one_day));
 	}
 	
 	function createDate(str) {
 		regex = /(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/;
 		date = regex.exec(str)
-		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), 0, 0, 0, 0);
-		//return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
+		return new Date(parseInt(date[1],10), parseInt(date[2],10)-1, parseInt(date[3],10), parseInt(date[4],10), parseInt(date[5],10), parseInt(date[6],10), 0);
+	}
+	
+	function getDaysTillEvent(event_date) {
+		var today = new Date();
+		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
+		var days_left = -compareDatesString(today, event_date);
+		if(days_left < 0)
+			return "past"
+		else if(days_left == 0)
+			return "today"
+		else if(days_left == 1)
+			return "tomorrow"
+		else
+			return days_left + " days"
+	}
+	
+	function formatStartTime(time) {
+		if(time != 0)
+			time = time + ":00 ";
+		else
+			return time = "";
+		if(time.length != 6)
+			time = "0" + time;
+		return time;
+	}	
+	
+	
+	/*function scrolling() {
+		var y0 = $(document).height() - $(window).height()
+		var y0_ios = $.getDocHeight() - window.innerHeight;
+		if(!all_found && ($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios)) {
+           	offs += step;
+			getEvents(step, offs)
+        }
+	}*/
+	
+	
+	//testing data types accurately in JavaScript (opposed to "typeof")
+	//from http://bonsaiden.github.com/JavaScript-Garden/
+	function is(type, obj) {
+		var clas = Object.prototype.toString.call(obj).slice(8, -1);
+		return obj !== undefined && obj !== null && clas === type;
+	}
+		
+	
+	/* For a given date, get the ISO week number
+	 *
+	 * Based on information at:
+	 *
+	 *    http://www.merlyn.demon.co.uk/weekcalc.htm#WNR
+	 *
+	 * Algorithm is to find nearest thursday, it's year
+	 * is the year of the week number. Then get weeks
+	 * between that date and the first day of that year.
+	 *
+	 * Note that dates in one year can be weeks of previous
+	 * or next year, overlap is up to 3 days.
+	 *
+	 * e.g. 2014/12/29 is Monday in week  1 of 2015
+	 *      2012/1/1   is Sunday in week 52 of 2011
+	 */
+	function getWeekNumber(d) {
+		// Copy date so don't modify original
+		d = new Date(d);
+		d.setHours(0,0,0);
+		// Set to nearest Thursday: current date + 4 - current day number
+		// Make Sunday's day number 7
+		d.setDate(d.getDate() + 4 - (d.getDay()||7));
+		// Get first day of year
+		var yearStart = new Date(d.getFullYear(),0,1);
+		// Calculate full weeks to nearest Thursday
+		var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+		// Return array of year and week number
+		return weekNo;
 	}
 	
 	$(".eventdialog").live("click", function() {
-		var data = $(this).siblings("span");
-		//console.log(data)
-		var descr = $(data[4]);
-		//console.log(descr.children());
-		var test = $(descr).find('img');
-		//console.log(test);	
-	
-		var title = data[5];
-		var remote_url = data[14];
-
+		var descr = $(this).children("span.descr");
+		var title = $(this).children("span.title");
+		var remote_url = $(this).children("span.remote_url");
+		var start_date = $(this).children("span.start_date").text();
+		var days_left = getDaysTillEvent(start_date);
 		$('<div>').simpledialog2({
 			mode: 'blank',
-			headerText: $(title).text().substr(0,10),
+			top: 0,
+			headerText: title.text().substr(0,10) + " (" + days_left +")",
 			headerClose: true,
-			blankContent : $(descr).text() +
-			"<p class='remote_url'><a href=" + $(remote_url).text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
+			blankContent : descr.text() +
+			"<p class='remote_url'><a href=" + remote_url.text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
 			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
 	
-	$('#call_json').bind("click", function() {
-		offs += 3;
-		getEvents(3, offs)
-	});
+	/*$('#call_json').bind("click", function() {
+		offs += step;
+		getEvents(step, offs)
+	});*/
 	
 });
 

@@ -1,63 +1,136 @@
+# -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
 from api.models import Event
-from api.utils import obj_to_json
 import urllib2
-from datetime import date, timedelta
+import datetime
 import random
+from bs4 import BeautifulSoup
+from dateutil import parser
+import re
 
 class Command(BaseCommand):
-    args = '<num_events>'
-    help = 'Generates <num_events> random events to event database'
+    args = ''
+    help = 'Scrapes events from AYY calendar'
     
-    def handle(self, *args, **options):	    
-	self.stdout.write('Handled stuff\n')
+    def handle(self, *args, **options):	
+        print 'Scraping AYY event calendar'
+	datere = re.compile(r'(\d+\.\d+\.\d+), (\d+)\.(\d+)')
 	
+	baseurl = 'http://ayy.fi/kalenteri/'
 	
-	events = self.extract_events('http://ayy.fi/kalenteri/')
-	for event in events:
-	   self.stdout.write( obj_to_json(event))
+	url = baseurl
+	fetched_main_pages = 0
+	while fetched_main_pages < 6 and url:
+            print 'Getting month [current+%d]: %s' % (fetched_main_pages, url)
+            event_listing = urllib2.urlopen(url)
+            fetched_main_pages = fetched_main_pages + 1
+            soup = BeautifulSoup(event_listing.read())
+            try:
+                url = baseurl + soup.find(id='content').find_all('a')[1]['href']
+                print 'Next url: %s' % url
+            except Exception:
+                print 'No next url found, this will be the last page'
+                url = None
+            
+            for row in soup.find_all('tr'):
+                try:
+                    link = row.a
+                    if not link: continue # No links found
+                        
+                    detail_url = link['href']
+                    if detail_url == '': continue # No valid url
+                    
+                    print '\tParsing: %s' % (detail_url)
+                    # Get data, parse
+                    detail_data = urllib2.urlopen(detail_url)            
+                    dsoup = BeautifulSoup(detail_data.read())
+                    
+                    event = Event()
+                    event.remote_source_name = 'ayy'
+                    event.remote_url = detail_url
+                    
+                    container = dsoup.find(id='content')
+                    if not container: continue;
+                    
+                    # Extract title
+                    try:
+                        event.title = container.find("h1", { "class": "main-title" }).string
+                    except Exception as e:
+                        print '\tError extracting title: %s' % e
+                    #print "Title: %s" % (title)               
+                    
+                    # Extract description
+                    try:
+                        content = container.find("div", { "class": "entry-content" })
+                        for c in content.find_all("script"): c.extract() # Remove scripts
+                        for c in content.find_all("div", { "class": "pd-rating" }): c.extract()
+                        event.descr = ""
+                        for c in content.contents: event.descr += str(c)
+                    except Exception as e:
+                        print '\tError extracting description: %s' % e
+                    #print "Descr: %s" % (contentstr[:100])
+                    
+                    # Extract times
+                    try:
+                        metadata = content.next_sibling.next_sibling.next_sibling
+                        start_time = metadata.p
+                        for c in start_time.find_all('b'): c.extract() #Remove b tags == titles
+                        start_time = start_time.get_text().split('\n') # Split remaining by line
+                        end_time = start_time[1]
+                        start_time = start_time[0]
+                        
+                        # Check if dates contain . as time separator, replace with : if so
+                        s = datere.match(start_time)                        
+                        if s: start_time = s.expand(r'\1 \2:\3')
+                        s = datere.match(end_time)
+                        if s: end_time = s.expand(r'\1 \2:\3')
+                        
+                        # Parse 
+                        event.start_date = parser.parse(start_time, dayfirst=True)
+                        event.end_date = parser.parse(end_time, dayfirst=True)
+                        #print "Start: %s, end: %s" % (event.start_date, event.end_date)
+                    except Exception as e:
+                        print '\tError resolving date: %s' % e
+                        raise e # Fatal, dates are required
+                    
+                    # Extract location
+                    try:
+                        info = metadata.contents[7].get_text().split('\n')
+                        event.venue = info[0].split('Paikka: ')[1]
+                        event.street_address = info[1].split('Osoite: ')[1]
+                        event.city = info[2].split('Kaupunki: ')[1]
+                        event.country = 'Finland'
+                    except Exception as e:
+                        print '\tError resolving location: %s' % e
+                    # TODO: Resolve lat and lon from street address
+                    
+                    #print 'Loc: %s, addr: %s, city: %s' % (loc, addr, city)
+                    
+                    # Extract links
+                    try:
+                        metadata = metadata.next_sibling.next_sibling
+                        info = metadata.contents[3]
+                        links = info.find_all('a')
+                        homepage = links[0]['href']
+                        facebookev = links[1]['href']
+                    except Exception as e:
+                        print '\tError resolving links: %s' % e
+                    #print 'Homepage: %s, FB: %s' % (homepage, facebookev)
+                    
+                    # Extract contact info
+                    try:
+                        info = metadata.contents[7].get_text().split('\n')
+                        event.org_name = info[0].split(u'Järjestäjä: ')[1]
+                        event.org_email = info[1].split(u'Sähköposti: ')[1]
+                        event.org_phone = info[2].split('Puhelin: ')[1]
+                    except Exception as e:
+                        print '\tError resolving organizer info: %s' % e
+                    #print 'Name: %s, email: %s, phone: %s' % (org_name, org_email, org_phone)
+                    
+                    event.save()
+                except Exception as e:
+                    print '\tFATAL ERROR handling event, discarded'
+                #print '----------------------------------------'
+            #break
+	
 	return
-	
-    def extract_events(self, url):
-	event_urls = []
-	events = []
-	
-	handle = urllib2.urlopen(url)
-	print handle.read(100)
-	
-	event_urls.append('http://ayy.fi/blog/events/13797-2/')
-	
-	for url in event_urls:
-	    events.append(self.extract_event(url))
-	return events
-	
-    def extract_event(self, url):
-	handle = urllib2.urlopen(url)
-	print handle.read(100)
-	
-	e = Event()
-	
-	min_date = (date.today() + timedelta(days=-30)).toordinal()
-	max_date = (date.today() + timedelta(days=60)).toordinal()
-	
-	e.start_date = random_day = date.fromordinal(random.randint(min_date, max_date))
-	e.end_date = e.start_date + timedelta(0, 60 * 60) # duration 60 minutes
-	
-	e.title = 'Event'
-	e.descr = 'Description for event'
-	
-	e.lat = random.randint(24000, 26000)/1000.0
-	e.lon = random.randint(58000, 62000)/1000.0
-	
-	'''
-	e.street_address = models.CharField(max_length=500)
-	e.city = models.CharField(max_length=500)
-	e.country = models.CharField(max_length=100)
-	'''
-	e.org_name = 'Sample Organizer'
-	e.org_email = 'sample.organizer@org.org'
-	e.org_phone = '+358501234567'
-	
-	e.save()
-	
-	return e
