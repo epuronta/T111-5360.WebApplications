@@ -65,11 +65,6 @@ $.getDocHeight = function(){
 
 
 $(document).ready(function(){
-	//var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
-	//var offs = 0;
-	// step defines how many events to get per request, 40px == the average height of an event li tag 
-	//var step = Math.round($.getDocHeight()*0.85/40); 
-	
 	//document.addEventListener("scroll", scrolling, false);
 	//document.addEventListener("touchmove", scrolling, false);
 	//window.onscroll = function() { scrolling(); };
@@ -122,43 +117,37 @@ $(document).ready(function(){
 		month[11]="December";
 		for(var i = 0; i < events.length; i++) {
 			event = events[i];
+			var divider = "";
 			if(i == 0 || compareDates(event, events[i-1])) {
 				var count = countSameDates(event, events);
-				var divider = $("<li />");
-				//prev_date = new Date();
-				/*if(i != 0)
-					prev_date = createDate(events[i-1].start_date);*/
+				divider = $("<li />");
 				var date = createDate(event.start_date);
 				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + (date.getMonth()+1))
 				divider.append($("<span />").addClass("ui-li-count").text(count));
-				/*var week_no = getWeekNumber(date);
-				if(week_no != getWeekNumber(prev_date)) {
-					$("#list").children("ul").append(
-						$("<li />")
-							.attr("data-theme","a")
-							.addClass("week-divider")
-							.text("Week " + week_no)
-						);
-				}*/
-				$("#list").children("ul").append(divider);
 			}
 			var container = $("<li />");
 			var start_time = createDate(event.start_date).getHours();
 			title = formatTitle(event.title);
 			start_time = formatTime(start_time)
 			container
-				.addClass("eventdialog")
+				.addClass("popup")
 				.append(
-					$("<span />")
-						.attr("style","color:#CC3300")
-						.text(start_time)
+					$("<a />")
+						.attr({"data-role":"button"})
+						.append(
+							$("<span />")
+								.attr("style","color:#CC3300")
+								.text(start_time)
 						)
-				.append(
-					$("<span />").text(" " + title)
+						.append(
+							$("<span />").text(" " + title)
+					)
 				);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
-				icon = "evt-icon-aalto"
+				icon = "evt-icon-aalto";
+			else if(event.remote_source_name == "ayy")
+				icon = "evt-icon-ayy"; 
 			for(prop in event) {
 				container
 					.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"})
@@ -170,10 +159,10 @@ $(document).ready(function(){
 							.text(event[prop])
 						);
 			}
-			$("#list").children("ul").append(container);
+			$("#list").children("ul").hide().append(divider).append(container).fadeIn("slow");
 		}
 		$('#eventlist').listview('refresh');
-		$('#loading').remove();	
+		$('#loading').remove();
 	}
 	
 	function countSameDates(event, events) {
@@ -244,18 +233,19 @@ $(document).ready(function(){
 	}
 	
 	
-	function scrolling() {
+	/*function scrolling() {
 		var y0 = $(document).height() - $(window).height()
 		var y0_ios = $.getDocHeight() - window.innerHeight;
-		if(!all_found && ($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios)) {
+		if($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios) {
            	offs += step;
 			getEvents(step, offs)
         }
-	}
+	}*/
 	
 	
 	//testing data types accurately in JavaScript (opposed to "typeof")
 	//from http://bonsaiden.github.com/JavaScript-Garden/
+	
 	function is(type, obj) {
 		var clas = Object.prototype.toString.call(obj).slice(8, -1);
 		return obj !== undefined && obj !== null && clas === type;
@@ -293,11 +283,11 @@ $(document).ready(function(){
 		return weekNo;
 	}
 	
-	$(".eventdialog").live("click", function() {
-		var descr = $(this).children("span.descr");
-		var title = $(this).children("span.title");
-		var remote_url = $(this).children("span.remote_url");
-		var start_date = $(this).children("span.start_date").text();
+	$(".popup").live("click", function() {
+		var descr = $(this).find("span.descr");
+		var title = $(this).find("span.title");
+		var remote_url = $(this).find("span.remote_url");
+		var start_date = $(this).find("span.start_date").text();
 		var days_left = getDaysTillEvent(start_date);
 		$('<div>').simpledialog2({
 			mode: 'blank',
@@ -309,11 +299,6 @@ $(document).ready(function(){
 			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
-	
-	/*$('#call_json').bind("click", function() {
-		offs += step;
-		getEvents(step, offs)
-	});*/
 	
 });
 

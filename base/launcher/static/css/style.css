@@ -25,11 +25,15 @@ and lunch/static/lunch/css for the subpage CSS files) ---- */
 	height:18px;
 	display:block;
 	clear:both;
-	margin:0px auto 7px auto;
+	margin:0px auto 5px auto;
 }
 
 #tabs a {
 	font-size:0.8em;
+}
+
+#tabs span {
+	padding: 0px auto 3px auto !important;	
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
