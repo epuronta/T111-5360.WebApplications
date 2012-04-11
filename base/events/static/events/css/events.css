@@ -70,20 +70,20 @@ div.ui-simpledialog-container div.ui-header {
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.ui-icon-evt-icon-aalto {
-		background-image: url("evt-icon.png") !important;
+		background-image: url("../img/evt-icon.png") !important;
 		background-size: 18px 18px !important;
 	}
 	
 	.ui-icon-evt-icon-ayy {
-		background-image: url("evt-icon-ayy.png") !important;
+		background-image: url("../img/evt-icon-ayy.png") !important;
 		background-size: 18px 18px !important;
 	}
 }
 
 .ui-icon-evt-icon-aalto {
-	background-image: url("evt-icon.png") !important;
+	background-image: url("../img/evt-icon.png") !important;
 }
 
 .ui-icon-evt-icon-ayy {
-		background-image: url("evt-icon-ayy.png") !important;
+		background-image: url("../img/evt-icon-ayy.png") !important;
 }

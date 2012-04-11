@@ -14,7 +14,7 @@ footer p a:hover {
 }
 
 .hidden {	
-	display:none;
+	display:none !important;
 }
 
 /* ---- launcher page (check events/static/events/css 

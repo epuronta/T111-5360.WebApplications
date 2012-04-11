@@ -118,18 +118,19 @@ $(document).ready(function(){
 		for(var i = 0; i < events.length; i++) {
 			event = events[i];
 			var divider = "";
+			var start_date = createDate(event.start_date);
 			if(i == 0 || compareDates(event, events[i-1])) {
 				var count = countSameDates(event, events);
 				divider = $("<li />");
-				var date = createDate(event.start_date);
-				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + (date.getMonth()+1))
+				divider
+					.addClass("ui-li-divider")
+					.attr({"data-role":"list-divider","role":"heading"})
+					.text(weekday[start_date.getDay()] + " " + start_date.getDate() + "." + (start_date.getMonth()+1))
 				divider.append($("<span />").addClass("ui-li-count").text(count));
 			}
-			var container = $("<li />");
-			var start_time = createDate(event.start_date).getHours();
 			title = formatTitle(event.title);
-			start_time = formatTime(start_time)
-			container
+			start_time = formatTime(start_date.getHours());
+			var container = $("<li />")
 				.addClass("popup")
 				.append(
 					$("<a />")
@@ -158,6 +159,13 @@ $(document).ready(function(){
 							.addClass("hidden")
 							.text(event[prop])
 						);
+			}
+			var today = new Date();
+			today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
+			if(compareDatesString(today, start_date) > 0) {
+				if(divider != "")
+					divider.addClass("hidden past");
+				container.addClass("hidden past");
 			}
 			$("#list").children("ul").hide().append(divider).append(container).fadeIn("slow");
 		}
@@ -223,12 +231,9 @@ $(document).ready(function(){
 	}
 	
 	function formatTime(time) {
-		if(time != 0)
-			time = time + ":00";
-		else
-			return time = "";
-		if(time.length != 5)
-			time = "0" + time;
+		if(!time) return ""
+		time += ":00";
+		if(time.length == 4) time = "0" + time;
 		return time
 	}
 	
