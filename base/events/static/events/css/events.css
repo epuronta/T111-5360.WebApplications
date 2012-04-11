@@ -33,9 +33,9 @@
 	color:#09F !important;	
 }
 
-.ui-simpledialog-container h1, h2, h3 {
+.ui-simpledialog-container h1, h2, h3, h4, h5 {
 	font-size:1em;	
-	margin: 12px 1% 10px 1% !important;
+	margin: 12px 2% 10px 2% !important;
 }
 
 .ui-simpledialog-container p {

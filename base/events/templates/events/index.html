@@ -289,18 +289,17 @@ $(document).ready(function(){
 	}
 	
 	$(".popup").live("click", function() {
-		var descr = $(this).find("span.descr");
-		var title = $(this).find("span.title");
-		var remote_url = $(this).find("span.remote_url");
-		var start_date = $(this).find("span.start_date").text();
+		var descr = $(this).find("span.descr").text();
+		var title = $(this).find("span.title").text();
+		var remote_url = $(this).find("span.remote_url").text();
+		var start_date = createDate($(this).find("span.start_date").text());
 		var days_left = getDaysTillEvent(start_date);
 		$('<div>').simpledialog2({
 			mode: 'blank',
 			top: 0,
-			headerText: title.text().substr(0,10) + " (" + days_left +")",
+			headerText: start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
 			headerClose: true,
-			blankContent : descr.text() +
-			"<p class='remote_url'><a href=" + remote_url.text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
+			blankContent : "<h5 class='remote_url'><a href=" + remote_url + " target='blank'>" + formatTitle(title) + "</a></h5>" + descr +
 			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
