@@ -64,7 +64,10 @@
 			success: function(data) {
 				for(campus in campuses){
 					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b'})
-					var campus_header = $("<div />").attr({"data-role":'header'})
+					var campus_header = $("<div />")
+						.attr({"data-role":'header'})
+						.attr({"href":launcherUrl,"data-role":'button',"data-icon":'home',"data-iconpos":'notext',"class":'ui-btn-right'})
+						.text('Home')
 					var campus_content = $("<div />").attr({"data-role":'content'})
 					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set'})
 					for(restaurant in data.restaurants) {
