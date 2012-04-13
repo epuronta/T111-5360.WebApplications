@@ -20,16 +20,16 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}events/css/events.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
-    <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" /> 
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.simpledialog.css" /> 
     
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
     <script>
 		$(document).bind("mobileinit", function() {
 			$.mobile.listview.prototype.options.filterPlaceholder = "Search events ...";
 		});
 	</script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
-    <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
@@ -65,11 +65,6 @@ $.getDocHeight = function(){
 
 
 $(document).ready(function(){
-	//var all_found = true; // boolean to check if all the possible events have been fetched. This is set to 'false' after every SUCCESSFUL data request!
-	//var offs = 0;
-	// step defines how many events to get per request, 40px == the average height of an event li tag 
-	//var step = Math.round($.getDocHeight()*0.85/40); 
-	
 	//document.addEventListener("scroll", scrolling, false);
 	//document.addEventListener("touchmove", scrolling, false);
 	//window.onscroll = function() { scrolling(); };
@@ -122,36 +117,38 @@ $(document).ready(function(){
 		month[11]="December";
 		for(var i = 0; i < events.length; i++) {
 			event = events[i];
+			var divider = "";
+			var start_date = createDate(event.start_date);
 			if(i == 0 || compareDates(event, events[i-1])) {
 				var count = countSameDates(event, events);
-				var divider = $("<li />");
-				//prev_date = new Date();
-				/*if(i != 0)
-					prev_date = createDate(events[i-1].start_date);*/
-				var date = createDate(event.start_date);
-				divider.addClass("ui-li-divider").attr({"data-role":"list-divider","role":"heading"}).text(weekday[date.getDay()] + " " + date.getDate() + "." + (date.getMonth()+1))
+				divider = $("<li />");
+				divider
+					.addClass("ui-li-divider")
+					.attr({"data-role":"list-divider","role":"heading"})
+					.text(weekday[start_date.getDay()] + " " + start_date.getDate() + "." + (start_date.getMonth()+1))
 				divider.append($("<span />").addClass("ui-li-count").text(count));
-				/*var week_no = getWeekNumber(date);
-				if(week_no != getWeekNumber(prev_date)) {
-					$("#list").children("ul").append(
-						$("<li />")
-							.attr("data-theme","a")
-							.addClass("week-divider")
-							.text("Week " + week_no)
-						);
-				}*/
-				$("#list").children("ul").append(divider);
 			}
-			var container = $("<li />");
-			var start_time = createDate(event.start_date).getHours();
-			start_time = formatStartTime(start_time);
-			container
-				.addClass("eventdialog")
-				.append("<span style='color:#CC3300'>" + start_time + "</span> " + event.title.substr(12)
-			);
+			title = formatTitle(event.title);
+			start_time = formatTime(start_date.getHours());
+			var container = $("<li />")
+				.addClass("popup")
+				.append(
+					$("<a />")
+						.attr({"data-role":"button"})
+						.append(
+							$("<span />")
+								.attr("style","color:#CC3300")
+								.text(start_time)
+						)
+						.append(
+							$("<span />").text(" " + title)
+					)
+				);
 			var icon = "false"
 			if(event.remote_source_name == "AaltoEvents")
-				icon = "evt-icon-aalto"
+				icon = "evt-icon-aalto";
+			else if(event.remote_source_name == "ayy")
+				icon = "evt-icon-ayy"; 
 			for(prop in event) {
 				container
 					.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"})
@@ -163,10 +160,17 @@ $(document).ready(function(){
 							.text(event[prop])
 						);
 			}
-			$("#list").children("ul").append(container);
+			var today = new Date();
+			today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
+			if(compareDatesString(today, start_date) > 0) {
+				if(divider != "")
+					divider.addClass("hidden past");
+				container.addClass("hidden past");
+			}
+			$("#list").children("ul").hide().append(divider).append(container).fadeIn("slow");
 		}
 		$('#eventlist').listview('refresh');
-		$('#loading').remove();	
+		$('#loading').remove();
 	}
 	
 	function countSameDates(event, events) {
@@ -220,21 +224,24 @@ $(document).ready(function(){
 			return days_left + " days"
 	}
 	
-	function formatStartTime(time) {
-		if(time != 0)
-			time = time + ":00";
-		else
-			return time = "";
-		if(time.length != 6)
-			time = "0" + time;
-		return time;
-	}	
+	function formatTitle(title) {
+		regex = /(\d{2}\.\d{2}\.\d{4}: )?(.+[^( \( \d.\d.\d{4} \))])/;
+		title = regex.exec(title)
+		return title[2]
+	}
+	
+	function formatTime(time) {
+		if(!time) return ""
+		time += ":00";
+		if(time.length == 4) time = "0" + time;
+		return time
+	}
 	
 	
 	/*function scrolling() {
 		var y0 = $(document).height() - $(window).height()
 		var y0_ios = $.getDocHeight() - window.innerHeight;
-		if(!all_found && ($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios)) {
+		if($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios) {
            	offs += step;
 			getEvents(step, offs)
         }
@@ -243,6 +250,7 @@ $(document).ready(function(){
 	
 	//testing data types accurately in JavaScript (opposed to "typeof")
 	//from http://bonsaiden.github.com/JavaScript-Garden/
+	
 	function is(type, obj) {
 		var clas = Object.prototype.toString.call(obj).slice(8, -1);
 		return obj !== undefined && obj !== null && clas === type;
@@ -280,27 +288,21 @@ $(document).ready(function(){
 		return weekNo;
 	}
 	
-	$(".eventdialog").live("click", function() {
-		var descr = $(this).children("span.descr");
-		var title = $(this).children("span.title");
-		var remote_url = $(this).children("span.remote_url");
-		var start_date = $(this).children("span.start_date").text();
+	$(".popup").live("click", function() {
+		var descr = $(this).find("span.descr").text();
+		var title = $(this).find("span.title").text();
+		var remote_url = $(this).find("span.remote_url").text();
+		var start_date = createDate($(this).find("span.start_date").text());
 		var days_left = getDaysTillEvent(start_date);
 		$('<div>').simpledialog2({
 			mode: 'blank',
 			top: 0,
-			headerText: title.text().substr(0,10) + " (" + days_left +")",
+			headerText: start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
 			headerClose: true,
-			blankContent : descr.text() +
-			"<p class='remote_url'><a href=" + remote_url.text() + " target='blank'>Alkuper&auml;inen tiedote</a></p>" +
+			blankContent : "<h5 class='remote_url'><a href=" + remote_url + " target='blank'>" + formatTitle(title) + "</a></h5>" + descr +
 			"<a rel='close' data-role='button' href='#'>Close</a>"
 		});
 	});
-	
-	/*$('#call_json').bind("click", function() {
-		offs += step;
-		getEvents(step, offs)
-	});*/
 	
 });
 

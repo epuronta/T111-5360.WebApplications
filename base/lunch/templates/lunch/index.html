@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}lunch/css/lunch.css" type="text/css" />
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
-    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head> 
 
@@ -69,10 +69,10 @@
 						.attr({"href":launcherUrl,"data-role":'button',"data-icon":'home',"data-iconpos":'notext',"class":'ui-btn-right'})
 						.text('Home')
 					var campus_content = $("<div />").attr({"data-role":'content'})
-					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set'})
+s					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set'})
 					for(restaurant in data.restaurants) {
 						if(data.restaurants[restaurant].campus == campuses[campus]) {
-							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true'})
+							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true'}).addClass("testi");
 							campus_restaurant.append('<h3>' + data.restaurants[restaurant].name + '</h3>')
 							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
 							campus_restaurant.append(lunch_data);

@@ -33,9 +33,9 @@
 	color:#09F !important;	
 }
 
-.ui-simpledialog-container h1, h2, h3 {
+.ui-simpledialog-container h1, h2, h3, h4, h5 {
 	font-size:1em;	
-	margin: 12px 1% 10px 1% !important;
+	margin: 12px 2% 10px 2% !important;
 }
 
 .ui-simpledialog-container p {
@@ -68,15 +68,22 @@ div.ui-simpledialog-container div.ui-header {
 }
 
 
-
-
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.ui-icon-evt-icon-aalto {
-		background-image: url("evt-icon.png") !important;
+		background-image: url("../img/evt-icon.png") !important;
+		background-size: 18px 18px !important;
+	}
+	
+	.ui-icon-evt-icon-ayy {
+		background-image: url("../img/evt-icon-ayy.png") !important;
 		background-size: 18px 18px !important;
 	}
 }
 
 .ui-icon-evt-icon-aalto {
-	background-image: url("evt-icon.png") !important;
+	background-image: url("../img/evt-icon.png") !important;
+}
+
+.ui-icon-evt-icon-ayy {
+		background-image: url("../img/evt-icon-ayy.png") !important;
 }
