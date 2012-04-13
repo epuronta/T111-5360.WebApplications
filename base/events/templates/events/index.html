@@ -20,16 +20,16 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}events/css/events.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
-    <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" /> 
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.simpledialog.css" /> 
     
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
     <script>
 		$(document).bind("mobileinit", function() {
 			$.mobile.listview.prototype.options.filterPlaceholder = "Search events ...";
 		});
 	</script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
-    <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
