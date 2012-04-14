@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}lunch/css/lunch.css" type="text/css" />
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
-    <script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
 </head> 
 
@@ -28,13 +28,20 @@
 <div id="campuslist" data-role="page" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
-
         <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
-
 	</div>
-	<div data-role="content">	
-		<ul data-role="listview">
+    
+    <div id="tabs" data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="{% url events-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
+                <li><a href="{% url lunch-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/lunch.png"/>Lunch</a></li>
+                <li><a class="ui-disabled" href="" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/news.png"/>News</a></li>
+            </ul>
+    </div>
+    
+	<div data-role="content" id="campuscontent">    	
+		<ul id="campuslist" data-role="listview" data-theme="b">
 			<li><a href="#Otaniemi">Otaniemi</a></li>
             <li><a href="#Toolo">Töölö</a></li>
 			<li><a href="#Keskusta">Keskusta</a></li>
@@ -47,14 +54,13 @@
 
 </body>
 
-
 <script>
 	
 	var campuses = new Array("Otaniemi","Töölö","Keskusta","Kumpula","Arabia","Viikki");
 	var campus_urls = new Array("Otaniemi","Toolo","Keskusta","Kumpula","Arabia","Viikki");
 	var launcherUrl = "{% url launcher-index-view %}";
 	var d = new Date();
-	var weekday = d.getDay();
+	var weekday = "2";
 		
 	$(document).ready(function(event) {
 		$.ajax({
@@ -66,13 +72,23 @@
 					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b'})
 					var campus_header = $("<div />")
 						.attr({"data-role":'header'})
+						.append($("<h1 />")
+						.text(campuses[campus])
+						)
+						.append($("<a />")
 						.attr({"href":launcherUrl,"data-role":'button',"data-icon":'home',"data-iconpos":'notext',"class":'ui-btn-right'})
 						.text('Home')
+						)
+						.append($("<a />")
+						.attr({"href":'#goback',"data-role":'button',"data-icon":'back',"data-iconpos":'notext',"data-rel":'back',"class":'ui-btn-left'})
+						.text('Go Back')
+						)						
+				
 					var campus_content = $("<div />").attr({"data-role":'content'})
-s					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set'})
+					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set',"data-mini":'true'})
 					for(restaurant in data.restaurants) {
 						if(data.restaurants[restaurant].campus == campuses[campus]) {
-							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true'}).addClass("testi");
+							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'}).addClass("testi");
 							campus_restaurant.append('<h3>' + data.restaurants[restaurant].name + '</h3>')
 							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
 							campus_restaurant.append(lunch_data);
@@ -82,7 +98,7 @@ s					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set'}
 					campus_content.append(campus_restaurants)
 					campus_page
 						.attr("id",campus_urls[campus])
-						.append(campus_header.append('<h1>' + campuses[campus] + '</h1>'))
+						.append(campus_header)
 						.append(campus_content)
 					$('body').append(campus_page)
 				}
