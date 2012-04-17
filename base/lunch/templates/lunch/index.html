@@ -40,7 +40,7 @@
             </ul>
     </div>
     
-	<div data-role="content" id="campuscontent">    	
+	<div data-role="content" class="campuscontent">    	
 		<ul id="campuslist" data-role="listview" data-theme="b">
 			<li><a href="#Otaniemi">Otaniemi</a></li>
             <li><a href="#Toolo">Töölö</a></li>
@@ -88,7 +88,7 @@
 					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set',"data-mini":'true'})
 					for(restaurant in data.restaurants) {
 						if(data.restaurants[restaurant].campus == campuses[campus]) {
-							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'}).addClass("testi");
+							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'});
 							campus_restaurant.append('<h3>' + data.restaurants[restaurant].name + '</h3>')
 							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
 							campus_restaurant.append(lunch_data);
