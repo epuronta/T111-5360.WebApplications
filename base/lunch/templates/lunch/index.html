@@ -60,7 +60,7 @@
 	var campus_urls = new Array("Otaniemi","Toolo","Keskusta","Kumpula","Arabia","Viikki");
 	var launcherUrl = "{% url launcher-index-view %}";
 	var d = new Date();
-	var weekday = "2";
+	var weekday = d.getDay();
 		
 	$(document).ready(function(event) {
 		$.ajax({

@@ -33,11 +33,11 @@
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
-        <header data-role="header">
+        <div data-role="header">
             <h1>Events</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
             <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
-        </header>
+        </div>
         <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -120,13 +120,13 @@ $(document).ready(function(){
 			var divider = "";
 			var start_date = createDate(event.start_date);
 			if(i == 0 || compareDates(event, events[i-1])) {
-				var count = countSameDates(event, events);
+				//var count = countSameDates(event, events);
 				divider = $("<li />");
 				divider
 					.addClass("ui-li-divider")
 					.attr({"data-role":"list-divider","role":"heading"})
 					.text(weekday[start_date.getDay()] + " " + start_date.getDate() + "." + (start_date.getMonth()+1))
-				divider.append($("<span />").addClass("ui-li-count").text(count));
+				//divider.append($("<span />").addClass("ui-li-count").text(count));
 			}
 			title = formatTitle(event.title);
 			start_time = formatTime(start_date.getHours());
@@ -294,13 +294,30 @@ $(document).ready(function(){
 		var remote_url = $(this).find("span.remote_url").text();
 		var start_date = createDate($(this).find("span.start_date").text());
 		var days_left = getDaysTillEvent(start_date);
+		var content = $("<div />")
+			.append(
+				$("<h5 />")
+					.addClass("remote_url")
+					.append(
+						$("<a />")
+							.attr({"href": remote_url, "target":"blank"})
+							.text(formatTitle(title))
+					)
+			)
+			.append($("<span />").append(descr))
+			.append(
+				$("<a />")
+					.attr({"rel":"close","data-role":"button","href":"#"})
+					.text("Close")
+			)
+		console.log( content.children())
+			
 		$('<div>').simpledialog2({
-			mode: 'blank',
-			top: 0,
-			headerText: start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
-			headerClose: true,
-			blankContent : "<h5 class='remote_url'><a href=" + remote_url + " target='blank'>" + formatTitle(title) + "</a></h5>" + descr +
-			"<a rel='close' data-role='button' href='#'>Close</a>"
+			mode : 'blank',
+			top : 0,
+			headerText : start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
+			headerClose : true,
+			blankContent : content.children()
 		});
 	});
 	
