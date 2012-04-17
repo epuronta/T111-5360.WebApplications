@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
+from django.utils.encoding import smart_unicode
 from api.models import Event
+from api import geocoder
 import urllib2
 import datetime
 import random
@@ -100,9 +102,26 @@ class Command(BaseCommand):
                         event.street_address = info[1].split('Osoite: ')[1]
                         event.city = info[2].split('Kaupunki: ')[1]
                         event.country = 'Finland'
+                        
+                        query = ''
+                        
+                        if event.street_address:
+                            query += '%s, ' % self.normalize_street_address(event.street_address)
+                        if event.city:
+                            query += '%s, ' % event.city
+                        if event.country:
+                            query += '%s' % event.country
+                        query = smart_unicode(query)
+                        geores = geocoder.geocode(query)
+                        if geores:
+                            event.lat = geores['lat']
+                            event.lon = geores['lon']
+                        else:
+                            print '\tUnable to resolve coordinates for query %s' % query
                     except Exception as e:
                         print '\tError resolving location: %s' % e
-                    # TODO: Resolve lat and lon from street address
+                    
+                    
                     
                     #print 'Loc: %s, addr: %s, city: %s' % (loc, addr, city)
                     
@@ -134,3 +153,22 @@ class Command(BaseCommand):
             #break
 	
 	return
+	
+    # Silly custom normalization for poorly formatted street addresses
+    def normalize_street_address(self, address):
+        if not address: return None
+
+        address = smart_unicode(address)
+        
+        # Teknologier want to shorten the village street names
+        address = address.replace(u'JMT', u'Jämeräntaival')
+        address = address.replace(u'SMT', u'Servin Maijan tie')
+        
+        # Stuff after comma often indicates floor or some insignificant detail,
+        # drop it
+        commaloc = address.find(',')
+        if commaloc > -1:
+            address = address[0:commaloc]
+        
+        return address
+            
