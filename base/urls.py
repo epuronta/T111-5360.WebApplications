@@ -8,6 +8,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = patterns('',
     url(r'^api/', include('api.urls')),
     url(r'^events/', include('events.urls')),
+    url(r'^eventsmap/', include('eventsmap.urls')),
     url(r'^lunch/', include('lunch.urls')),
     url(r'^', include('launcher.urls')),
 )

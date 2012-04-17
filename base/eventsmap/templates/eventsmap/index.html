@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <!-- viewport -->
+    <meta name="viewport" content="width=device-width">
+    
+    <!-- iOS stuff -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+    
+    <!-- For mobile browsers that do not recognize the viewport tag -->
+    <meta name="MobileOptimized" content="320" />
+    
+    <title>AaltoMobile > EventsMap</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
+    <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />-->
+    <!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.simpledialog.css" /> -->
+    
+    <script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
+    <!--<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>-->
+    <!--<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>-->
+
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+
+    <style type="text/css">
+      html, body, #basicMap {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+      }
+    </style>
+</head>
+<body>
+    <div id="basicMap"></div>
+</body>
+
+<script>
+$(document).ready(function() {
+    getEvents(draw_map)
+});
+
+function getEvents(callback) {
+    $("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
+    $.ajax({
+            url: "/api/events/",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                    if(!data.events) {
+                            console.log("Error, no events in data", data)
+                            return;
+                    }
+                    callback(data.events);
+    }, error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
+    }
+    });
+
+}
+
+function draw_map(events) {
+    map = new OpenLayers.Map("basicMap");
+    var mapnik = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+
+    // Center & zoom level
+    map.setCenter(get_lonlat(24.822759,60.187109), 14);
+
+    map.addLayer(get_marker_layer(events));
+}
+
+
+function get_lonlat(lon, lat) {
+    return new OpenLayers.LonLat(lon, lat) // Center of the map
+            .transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
+            );
+}
+
+function get_marker_layer(events) {    
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+console.log(events);
+    for(var i = 0; i < events.length; i++) {
+
+        var event = events[i];
+
+        if(event.lat == "0" || event.lon == "0") {
+            console.log("Skipping event");
+            continue;
+        }
+
+        var marker = new OpenLayers.Marker(get_lonlat(event.lon, event.lat));
+        markers.addMarker(marker);
+    }
+
+    return markers;
+    //markers.addMarker(new OpenLayers.Marker(lonLat));
+}    
+</script>
+
+
+</html>
