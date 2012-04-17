@@ -5,7 +5,7 @@ import dateutil.parser
 import re
 from xml.dom.minidom import parse
 from django.utils.encoding import smart_unicode
-
+from api.geocoder import reverse_geocode
 from api.models import Event
 from api.utils import obj_to_json
 
@@ -15,9 +15,6 @@ class Command(BaseCommand):
 	self.stdout.write('Getting Aalto Events stuff\n')
 	
 	events = self.extract_events('http://www.aalto.fi/fi/current/events/rss.xml')
-	for event in events:
-	    #print obj_to_json(event)
-	    event.save()
 	self.stdout.write('Finished, added ' + str(len(events)) + ' events\n')
 	return
 	
@@ -32,9 +29,9 @@ class Command(BaseCommand):
 	sanitizer_re = re.compile(r'(style|id|class)="[^"]*"')
 	items = dom.getElementsByTagName('item')
 	for item in items:
-	    e = Event()	    
+	    e = Event()
 	    e.remote_source_name = 'AaltoEvents'
-	    e.remote_url = self.getdata(item, 'guid')
+	    e.remote_url = self.getdata(item, 'link')
 	    
 	    if Event.objects.filter(remote_url__iexact=e.remote_url).count() > 0:
 		print 'Event already exists, continuing.'
@@ -56,23 +53,52 @@ class Command(BaseCommand):
 	    
 	    try:
 		point = self.getdata(item, 'georss:point')
+		if not point: raise Exception('No georss:point')
+		
+		point = point.replace(',', '.')
 		point = point.split(' ')
 		e.lat = float(point[0])
 		e.lon = float(point[1])
-	    except Exception:
+	    except Exception as ex:
+                #print '%s' % ex
 		e.lat = 0
 		e.lon = 0
 
 	    e.org_name = smart_unicode(self.getdata(item, 'author'))
 	    
-	    # TODO: Lookup street address based on geoloc
-	    e.street_address = ''
-	    e.city = ''
-	    e.country = ''	    
+	    try: 
+                #print e.lat, e.lon
+                if not (e.lat and e.lat != 0 and e.lon and e.lon != 0):
+                    raise Exception('Missing lat or lon')
+                
+                res = reverse_geocode(e.lat, e.lon)
+                #print res
+                
+                if hasattr(res, 'street_address'):
+                    e.street_address = res.street_address
+                else:
+                    e.street_address = ''
+                    
+                if hasattr(res, 'city'):
+                    e.city = res.city
+                else:
+                    e.city = ''
+                    
+                if hasattr(res, 'country'):
+                    e.country = res.country
+                else:
+                    e.country = 'Finland'
+	    except Exception as ex:
+                #print 'Error fetching street address: %s' % ex
+                e.street_address = ''
+                e.city = ''
+                e.country = ''
+                
 	    e.org_email = ''
 	    e.org_phone = ''
 	
-	    events.append(e)
+            e.save()
+            events.append(e)
 	
 	
 	return events
