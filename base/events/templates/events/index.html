@@ -157,7 +157,7 @@ $(document).ready(function(){
 							.addClass(prop)
 							.addClass("property")
 							.addClass("hidden")
-							.text(event[prop])
+							.html(event[prop])
 						);
 			}
 			var today = new Date();
@@ -212,7 +212,7 @@ $(document).ready(function(){
 	
 	function getDaysTillEvent(event_date) {
 		var today = new Date();
-		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
+		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(), today.getHours(),0,0,0);
 		var days_left = -compareDatesString(today, event_date);
 		if(days_left < 0)
 			return "past"
@@ -289,11 +289,28 @@ $(document).ready(function(){
 	}
 	
 	$(".popup").live("click", function() {
-		var descr = $(this).find("span.descr").text();
+		var descr = $(this).find("span.descr").clone();
 		var title = $(this).find("span.title").text();
 		var remote_url = $(this).find("span.remote_url").text();
 		var start_date = createDate($(this).find("span.start_date").text());
 		var days_left = getDaysTillEvent(start_date);
+		
+		$(descr).children().each(function() {
+			var element = $(this)
+			element.removeClass();
+			if(element.children().length > 0)  {
+				element.children().each(function() {
+					var subelement = $(this);
+					subelement.removeClass();
+					if(!subelement.is("img") && $.trim(subelement.text()).length == 0)
+						subelement.remove();
+				});
+			}
+			else if(!element.is("img") && $.trim(element.text()).length == 0)
+				$(this).remove();
+				
+		});
+		
 		var content = $("<div />")
 			.append(
 				$("<h5 />")
@@ -304,13 +321,12 @@ $(document).ready(function(){
 							.text(formatTitle(title))
 					)
 			)
-			.append($("<span />").append(descr))
+			.append($("<span />").append(descr.children()))
 			.append(
 				$("<a />")
 					.attr({"rel":"close","data-role":"button","href":"#"})
 					.text("Close")
 			)
-		console.log( content.children())
 			
 		$('<div>').simpledialog2({
 			mode : 'blank',
