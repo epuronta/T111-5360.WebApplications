@@ -17,6 +17,10 @@ footer p a:hover {
 	display:none !important;
 }
 
+.visible {
+	display:block !important;
+}
+
 /* ---- launcher page (check events/static/events/css 
 and lunch/static/lunch/css for the subpage CSS files) ---- */
 

@@ -1,17 +1,33 @@
 @charset "UTF-8";
 /* CSS Document */
 
+.past {	
+	display:none !important;
+}
+
 #loading img {
 	position:relative;
 	margin: 30px auto 20px auto;
 	display:block;
 }
 
-.week-divider {
-	font-size:0.7em !important;
-	text-align:center !important;
-	padding:2px !important;
-	opacity:0.75;
+.ui-input-search {
+	float:left !important;
+	display:inline !important;
+	width:50% !important;
+	max-width:155px !important;
+}
+
+.filter {
+	position:relative !important;
+	margin:5px 3px 5px 3px;	
+	float:right;
+}
+
+.filter div {
+	display:inline;
+	float:right;
+	margin: 0 5px 0 5px;
 }
 
 .ui-li-divider {
