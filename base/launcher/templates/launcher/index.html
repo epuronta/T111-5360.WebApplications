@@ -26,6 +26,8 @@
     
 	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    <script src="http://www.modernizr.com/downloads/modernizr-latest.js"></script>
+    
 <body>
     
     <div id="launcher" data-role="page" data-theme="b">
@@ -42,7 +44,7 @@
             </ul>
         </div>
         
-        <div data-role="content">
+        <div id="content" data-role="content">
             
         </div>
         
@@ -53,5 +55,49 @@
     </div>	
 
 </body>
+
+<script>
+
+var localStorageKey = "favorite_restaurant_key";
+var localStorageValue = "";
+var d = new Date();
+var weekday = d.getDay();
+
+$(document).ready(function(){
+		if (Modernizr.localstorage) {
+			localStorageValue = getStoreValue();
+			var ajax_url = "http://localhost:8000/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
+				$.ajax({
+				url: ajax_url,
+				type: "GET",
+				dataType: "json",
+					success: function(data) {
+					var lunch_data = getLunchLists(localStorageValue, data.lunchlists);
+					var favorite_lunchlist = $("<div/>").append(lunch_data);
+					var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
+					$('#content').append(favorite_lunchlist_header);
+					$('#content').append(favorite_lunchlist);					
+					}				
+				})
+		}
+});
+
+function getStoreValue() {
+    var item = localStorage.getItem(localStorageKey);
+    if (item != null && item.length != 0) {
+		localStorageValue = item;
+		}
+		return item;
+}
+
+function getLunchLists(restaurant_name,lunchlists) {
+		var lunch_data = "Lounastietoja ei saatavilla.";
+		for(lunchlist in lunchlists) {
+			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
+				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+		}
+		return lunch_data
+	}
+</script>
 
 </html>

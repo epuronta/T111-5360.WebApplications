@@ -25,7 +25,7 @@
 </head> 
 
 <body>
-<div id="campuslist" data-role="page" data-theme="b">
+<div id="campuslistpage" data-role="page" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
         <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
@@ -60,6 +60,8 @@
 	var campus_urls = new Array("Otaniemi","Toolo","Keskusta","Kumpula","Arabia","Viikki");
 	var launcherUrl = "{% url launcher-index-view %}";
 	var d = new Date();
+	var localStorageKey = "favorite_restaurant_key";
+	var localStorageValue = "";
 	var weekday = d.getDay();
 		
 	$(document).ready(function(event) {
@@ -87,12 +89,18 @@
 					var campus_content = $("<div />").attr({"data-role":'content'})
 					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set',"data-mini":'true'})
 					for(restaurant in data.restaurants) {
-						if(data.restaurants[restaurant].campus == campuses[campus]) {
-							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'});
-							campus_restaurant.append('<h3>' + data.restaurants[restaurant].name + '</h3>')
+						var restaurant_current = data.restaurants[restaurant];
+						if(restaurant_current.campus == campuses[campus]) {
+							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'})							
+							var favorite_button = $("<img />").attr({"src":"{{STATIC_URL}}lunch/img/favorite.png","id":restaurant_current.name,"class":"favorite_button","align":"right","alt":"Add as your favorite restaurant"})
+
+							campus_restaurant							
+							.append($("<h3 />").append(data.restaurants[restaurant].name)
+							.append(favorite_button))
+
 							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
 							campus_restaurant.append(lunch_data);
-							campus_restaurants.append(campus_restaurant);
+							campus_restaurants.append(campus_restaurant);														
 						}
 					}
 					campus_content.append(campus_restaurants)
@@ -100,10 +108,18 @@
 						.attr("id",campus_urls[campus])
 						.append(campus_header)
 						.append(campus_content)
+
 					$('body').append(campus_page)
+					
 				}
 			}	
 		})
+	});
+	
+	$(".favorite_button").live("click", function(){
+			localStorageValue = this.id;
+			localStorage.setItem(localStorageKey, localStorageValue)
+			popup(localStorageValue + " has been added as you favorite restaurant");
 	});
 	
 	$(document).bind( "pagebeforechange", function( e, data ) {
@@ -125,7 +141,16 @@
 			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
 				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
 		}
-		return lunch_data
+		return lunch_data;
+	}
+	
+	function popup( txt ) {
+		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>").css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
+		.appendTo( $('body') )
+		.delay( 99999 )
+		.fadeOut( 400, function(){
+		$(this).remove();	
+		});
 	}
 	
 </script>
