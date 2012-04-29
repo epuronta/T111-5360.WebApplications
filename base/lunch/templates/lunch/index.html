@@ -147,7 +147,7 @@
 	function popup( txt ) {
 		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>").css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
 		.appendTo( $('body') )
-		.delay( 99999 )
+		.delay( 1500 )
 		.fadeOut( 400, function(){
 		$(this).remove();	
 		});
