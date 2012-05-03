@@ -162,7 +162,7 @@ $(document).ready(function(){
 			}
 			var today = new Date();
 			today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
-			if(compareDatesString(today, start_date) > 0) {
+			if(compareDatesString(today, start_date) >= 0) {
 				if(divider != "")
 					divider.addClass("past");
 				container.addClass("past");
@@ -173,24 +173,18 @@ $(document).ready(function(){
 		}
 		
 		var event_filter = $("<div />")
-			.addClass("filter")
+			.addClass("filters")
 			.append(
 				$("<div />")
 					.css({"width":"32px"})
-					.attr("id","filter-aalto")
-					.append(
-						$("<img />")
-							.attr({"src":"{{STATIC_URL}}img/aalto_events.png","alt":"Show Aalto Events"})
-					)
+					.attr("id","AaltoEvents")
+					.addClass("filter active")
 			)
 			.append(
 				$("<div />")
 					.css({"width":"32px"})
-					.attr("id","filter-ayy")
-					.append(
-						$("<img />")
-							.attr({"src":"{{STATIC_URL}}img/ayy_events.png","alt":"Show AYY Events"})
-					)
+					.attr("id","ayy")
+					.addClass("filter active")
 			);
 		$('.ui-listview-filter').append(event_filter);
 		$('#eventlist').listview('refresh');
@@ -312,18 +306,28 @@ $(document).ready(function(){
 		return weekNo;
 	}
 	
-	$("#filter-aalto").live("click", function() {
-		$(this).addClass("active");
+	$(".filter").live("tap","click", function() {
+		var event_src = $(this);
+		if(event_src.hasClass("active")) {
+			event_src.removeClass("active");
+			event_src.addClass("inactive");
+		}
+		else {
+			event_src.addClass("active");
+			event_src.removeClass("inactive");
+		}
 		$('#eventlist').children('li').each(function() {
-			if(!$(this).hasClass("hidden")) {
-				var current = $(this);
-				if(current.find('span.remote_source_name').text().toLowerCase() == 'ayy')
-					current.removeClass("visible").addClass("hidden");
+			var current_event = $(this);
+			if(current_event.find('span.remote_source_name').text().toLowerCase() == event_src.attr("id").toLowerCase()) {
+				if(event_src.hasClass("active"))
+					current_event.removeClass("hidden").addClass("visible");
+				else
+					current_event.removeClass("visible").addClass("hidden");
 			}
 		});
 	});
 	
-	$(".popup").live("click", function() {
+	$(".popup").live("tap", "click", function() {
 		var descr = $(this).find("span.descr").clone();
 		var title = $(this).find("span.title").text();
 		var remote_url = $(this).find("span.remote_url").text();
@@ -331,17 +335,10 @@ $(document).ready(function(){
 		var days_left = getDaysTillEvent(start_date);
 		
 		$(descr).children().each(function() {
-			var element = $(this)
-			element.removeClass();
-			if(element.children().length > 0)  {
-				element.children().each(function() {
-					var subelement = $(this);
-					subelement.removeClass();
-					if(!subelement.is("img") && $.trim(subelement.text()).length == 0)
-						subelement.remove();
-				});
-			}
-			else if(!element.is("img") && $.trim(element.text()).length == 0)
+			$(this).removeClass();
+			if(!$(this).find('a').attr('target'))
+				!$(this).find('a').attr('target','_blank');
+			if(!$(this).is("img") && $.trim($(this).text()).length == 0)
 				$(this).remove();
 				
 		});

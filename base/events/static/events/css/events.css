@@ -18,16 +18,37 @@
 	max-width:155px !important;
 }
 
-.filter {
+.filters {
 	position:relative !important;
-	margin:5px 3px 5px 3px;	
+	margin:0px 3px 0px 3px;	
 	float:right;
 }
 
-.filter div {
+.filter {
+	height:32px;
 	display:inline;
 	float:right;
-	margin: 0 5px 0 5px;
+	margin: 5px 5px 5px 5px;
+}
+
+#ayy.active {
+	background-image:url(../img/ayy_events_active.png);
+	background-repeat:no-repeat;
+}
+
+#ayy.inactive {
+	background-image:url(../img/ayy_events_inactive.png);
+	background-repeat:no-repeat;
+}
+
+#AaltoEvents.active {
+	background-image:url(../img/aalto_events_active.png);
+	background-repeat:no-repeat;
+}
+
+#AaltoEvents.inactive {
+	background-image:url(../img/aalto_events_inactive.png);
+	background-repeat:no-repeat;
 }
 
 .ui-li-divider {
@@ -88,7 +109,7 @@ div.ui-simpledialog-container div.ui-header {
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.ui-icon-evt-icon-aalto {
-		background-image: url("../img/evt-icon.png") !important;
+		background-image: url("../img/evt-icon-aalto.png") !important;
 		background-size: 18px 18px !important;
 	}
 	
@@ -99,7 +120,7 @@ div.ui-simpledialog-container div.ui-header {
 }
 
 .ui-icon-evt-icon-aalto {
-	background-image: url("../img/evt-icon.png") !important;
+	background-image: url("../img/evt-icon-aalto.png") !important;
 }
 
 .ui-icon-evt-icon-ayy {
