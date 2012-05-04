@@ -389,7 +389,7 @@ $(document).bind('ready',function() {
 	
 	$(document).bind( "pagebeforeload", function( event, data ){
 		event.preventDefault();
-		data.deferred.resolve( data.absUrl, data.options, "campuslistpage" );
+		data.deferred.resolve( data.absUrl, data.options, "launcher" );
 	});
 	
 });
