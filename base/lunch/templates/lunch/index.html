@@ -99,6 +99,10 @@
 							.append(favorite_button))
 
 							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
+
+							regex = /(\d+(,\d+)*\s*€)/igm;
+							lunch_data = lunch_data.replace(regex,'');
+							
 							campus_restaurant.append(lunch_data);
 							campus_restaurants.append(campus_restaurant);
 						}
@@ -135,6 +139,11 @@
 			e.preventDefault()
 		}
 	});*/
+	
+	$(document).bind( "pagebeforeload", function( event, data ){
+		event.preventDefault();
+		data.deferred.resolve( data.absUrl, data.options, "campuslistpage" );
+	});
 	
 	function getLunchLists(restaurant_name,lunchlists) {
 		var lunch_data = "Lounastietoja ei saatavilla.";

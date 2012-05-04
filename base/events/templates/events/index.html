@@ -63,7 +63,7 @@ $.getDocHeight = function(){
 };
 
 
-$(document).ready(function(){
+$(document).bind('ready',function() {
 	addScrollEffect();
 	getEvents(999999999,0);
 
@@ -385,6 +385,11 @@ $(document).ready(function(){
 			blankContent : content.children(),
 			callbackOpen : removeScrollEffect()
 		});
+	});
+	
+	$(document).bind( "pagebeforeload", function( event, data ){
+		event.preventDefault();
+		data.deferred.resolve( data.absUrl, data.options, "campuslistpage" );
 	});
 	
 });
