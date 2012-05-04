@@ -66,7 +66,7 @@
 		
 	$(document).ready(function(event) {
 		$.ajax({
-			url: "http://localhost:8000/api/lunch/search/?weekday=" + weekday,
+			url: "/api/lunch/search/?weekday=" + weekday,
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
