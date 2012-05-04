@@ -62,8 +62,9 @@ var d = new Date();
 var weekday = d.getDay();
 
 $(document).ready(function(){
+	console.log("moh");
 	localStorageValue = getStoreValue();
-	var ajax_url = "/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
+	var ajax_url = "/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
 		$.ajax({
 		url: ajax_url,
 		type: "GET",
