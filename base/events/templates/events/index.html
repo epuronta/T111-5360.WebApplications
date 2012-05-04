@@ -64,9 +64,7 @@ $.getDocHeight = function(){
 
 
 $(document).ready(function(){
-	document.addEventListener("scroll", scrolling, false);
-	document.addEventListener("touchmove", scrolling, false);
-	//window.onscroll = function() { scrolling(); };
+	addScrollEffect();
 	getEvents(999999999,0);
 
 	function getEvents(limit, offset) {
@@ -304,6 +302,21 @@ $(document).ready(function(){
 		return weekNo;
 	}
 	
+	function addScrollEffect() {
+		//window.onscroll = function() { scrolling(); };
+		document.addEventListener("scroll", scrolling, false);
+		document.addEventListener("touchmove", scrolling, false);
+		console.log("lisatty");
+		return false;	
+	}
+	
+	function removeScrollEffect() {
+		document.removeEventListener("scroll", scrolling, false);
+		document.removeEventListener("touchmove", scrolling, false);
+		console.log("poistettu");
+		return false;	
+	}
+	
 	$(".filter").live("tap","click", function() {
 		var event_src = $(this);
 		if(event_src.hasClass("active")) {
@@ -325,7 +338,13 @@ $(document).ready(function(){
 		});
 	});
 	
+	$('a[rel="close"]').live("click", function() {
+		addScrollEffect();
+		return false;
+	});
+	
 	$(".popup").live("tap", "click", function() {
+		//removeScrollEffect();
 		var descr = $(this).find("span.descr").clone();
 		var title = $(this).find("span.title").text();
 		var remote_url = $(this).find("span.remote_url").text();
@@ -363,7 +382,8 @@ $(document).ready(function(){
 			top : 0,
 			headerText : start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
 			headerClose : true,
-			blankContent : content.children()
+			blankContent : content.children(),
+			callbackOpen : removeScrollEffect()
 		});
 	});
 	
