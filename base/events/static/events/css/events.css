@@ -18,6 +18,11 @@
 	max-width:155px !important;
 }
 
+form {
+	position:relative;
+	z-index:100 !important;
+}
+
 .filters {
 	position:relative !important;
 	margin:0px 3px 0px 3px;	

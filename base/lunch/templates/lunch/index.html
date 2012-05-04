@@ -123,7 +123,7 @@
 			popup(localStorageValue + " has been added as you favorite restaurant");
 	});
 	
-	$(document).bind( "pagebeforechange", function( e, data ) {
+	/*$(document).bind( "pagebeforechange", function( e, data ) {
 		// http://jquerymobile.com/test/docs/pages/page-dynamic.html
 		if ( typeof data.toPage === "string" ) {
 			var urlObj = $.mobile.path.parseUrl( data.toPage )
@@ -134,7 +134,7 @@
 			$.mobile.changePage( $page, data.options );
 			e.preventDefault()
 		}
-	});
+	});*/
 	
 	function getLunchLists(restaurant_name,lunchlists) {
 		var lunch_data = "Lounastietoja ei saatavilla.";

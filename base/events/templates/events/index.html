@@ -50,7 +50,6 @@
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">
             </ul>
         </div>
-        <!--<a id="call_json" href="#" data-role="button" data-mini="true" data-corners="false" data-theme="a">Show me more!</a>-->
     </div>
 </body>
 
@@ -65,8 +64,8 @@ $.getDocHeight = function(){
 
 
 $(document).ready(function(){
-	//document.addEventListener("scroll", scrolling, false);
-	//document.addEventListener("touchmove", scrolling, false);
+	document.addEventListener("scroll", scrolling, false);
+	document.addEventListener("touchmove", scrolling, false);
 	//window.onscroll = function() { scrolling(); };
 	getEvents(999999999,0);
 
@@ -77,7 +76,6 @@ $(document).ready(function(){
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
-				//all_found = false;
 				if(!data.events) {
 					console.log("Error, no events in data", data)
 					return;
@@ -86,7 +84,6 @@ $(document).ready(function(){
 				displayEvents(data.events);
 		}, error: function(jqXHR, textStatus, errorThrown) {
 			$('#loading').remove();
-			//all_found = true;
 			console.log(jqXHR, textStatus, errorThrown);
 		}
 		});
@@ -187,6 +184,7 @@ $(document).ready(function(){
 					.addClass("filter active")
 			);
 		$('.ui-listview-filter').append(event_filter);
+		$('#list').children('form').attr("id","scrollable").css({"width":$("#tabs").outerWidth() + "!important"});
 		$('#eventlist').listview('refresh');
 		$('#loading').remove();
 	}
@@ -256,14 +254,14 @@ $(document).ready(function(){
 	}
 	
 	
-	/*function scrolling() {
-		var y0 = $(document).height() - $(window).height()
-		var y0_ios = $.getDocHeight() - window.innerHeight;
-		if($(window).scrollTop() == y0-100 || window.pageYOffset == y0_ios) {
-           	offs += step;
-			getEvents(step, offs)
-        }
-	}*/
+	function scrolling() {
+		var form_width = $("#tabs").outerWidth();
+		var y0 = $(window).scrollTop();
+		if(y0 > 120)
+			$("#scrollable").stop().css({"position":"fixed","top":"15px"}).css({"width":form_width});
+		else 
+			$("#scrollable").stop().css({"position":"relative","top":"0px"}).css({"width":form_width});
+	}
 	
 	
 	//testing data types accurately in JavaScript (opposed to "typeof")

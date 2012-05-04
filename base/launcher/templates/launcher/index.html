@@ -53,7 +53,6 @@
         </footer>
         
     </div>	
-
 </body>
 
 <script>
@@ -64,22 +63,20 @@ var d = new Date();
 var weekday = d.getDay();
 
 $(document).ready(function(){
-		if (Modernizr.localstorage) {
-			localStorageValue = getStoreValue();
-			var ajax_url = "http://localhost:8000/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
-				$.ajax({
-				url: ajax_url,
-				type: "GET",
-				dataType: "json",
-					success: function(data) {
-					var lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-					var favorite_lunchlist = $("<div/>").append(lunch_data);
-					var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
-					$('#content').append(favorite_lunchlist_header);
-					$('#content').append(favorite_lunchlist);					
-					}				
-				})
-		}
+	localStorageValue = getStoreValue();
+	var ajax_url = "http://localhost:8000/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
+		$.ajax({
+		url: ajax_url,
+		type: "GET",
+		dataType: "json",
+			success: function(data) {
+			var lunch_data = getLunchLists(localStorageValue, data.lunchlists);
+			var favorite_lunchlist = $("<div/>").append(lunch_data);
+			var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
+			$('#content').append(favorite_lunchlist_header);
+			$('#content').append(favorite_lunchlist);					
+			}				
+		})
 });
 
 function getStoreValue() {
