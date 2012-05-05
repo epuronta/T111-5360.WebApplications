@@ -41,7 +41,12 @@ and lunch/static/lunch/css for the subpage CSS files) ---- */
 }
 
 h4 {
-	margin: 1em !important;	
+	margin: 1em !important;
+	font-size:0.8em;
+}
+
+li {
+	font-size:0.8em;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {

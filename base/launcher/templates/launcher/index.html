@@ -71,7 +71,7 @@ $(document).ready(function(){
 			success: function(data) {
 				var lunch_data = "Ravintola on suljettu tai lounastietoja ei muusta syystä ole saatavilla.";
 				lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-				var favorite_lunch = $("<div/>").attr({"id":'favorite_lunch'}).css({"background-color":"white", "margin":"4px", "padding": "1px 10px 6px 10px", "border-radius": "10px"})
+				var favorite_lunch = $("<div/>").attr({"id":'favorite_lunch'}).css({"background-color":"white", "padding": "1px 7px 4px 7px", "border-radius": "10px"})
 				var favorite_lunchlist = $("<div/>").append(lunch_data);
 				var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
 				favorite_lunch.append(favorite_lunchlist_header);
