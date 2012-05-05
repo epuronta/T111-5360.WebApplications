@@ -70,11 +70,11 @@ $(document).ready(function(){
 		type: "GET",
 		dataType: "json",
 			success: function(data) {
-			var lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-			var favorite_lunchlist = $("<div/>").append(lunch_data);
-			var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
-			$('#content').append(favorite_lunchlist_header);
-			$('#content').append(favorite_lunchlist);					
+				var lunch_data = getLunchLists(localStorageValue, data.lunchlists);
+				var favorite_lunchlist = $("<div/>").append(lunch_data);
+				var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
+				$('#content').append(favorite_lunchlist_header);
+				$('#content').append(favorite_lunchlist);					
 			}				
 		})
 });
