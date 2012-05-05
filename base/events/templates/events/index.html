@@ -47,8 +47,7 @@
         </div>
         
         <div data-role="content" id="list">
-            <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b">
-            </ul>
+            <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b"></ul>
         </div>
     </div>
 </body>
@@ -306,14 +305,14 @@ $(document).bind('ready',function() {
 		//window.onscroll = function() { scrolling(); };
 		document.addEventListener("scroll", scrolling, false);
 		document.addEventListener("touchmove", scrolling, false);
-		console.log("lisatty");
+		console.log("Add scroll listener");
 		return false;	
 	}
 	
 	function removeScrollEffect() {
 		document.removeEventListener("scroll", scrolling, false);
 		document.removeEventListener("touchmove", scrolling, false);
-		console.log("poistettu");
+		console.log("Remove scroll listener");
 		return false;	
 	}
 	
@@ -344,12 +343,18 @@ $(document).bind('ready',function() {
 	});
 	
 	$(".popup").live("tap", "click", function() {
-		//removeScrollEffect();
 		var descr = $(this).find("span.descr").clone();
 		var title = $(this).find("span.title").text();
 		var remote_url = $(this).find("span.remote_url").text();
 		var start_date = createDate($(this).find("span.start_date").text());
 		var days_left = getDaysTillEvent(start_date);
+		
+		var lat = $(this).find("span.lat").text();
+		var lon = $(this).find("span.lon").text();
+		var google_maps_str = "http://maps.google.com/maps?q=" + lat + "," + lon + "&amp;ie=UTF8&amp;t=m&amp;z=14&amp;ll=" + lat + "," + lon + "&amp;output=embed";
+		var venue = $(this).find("span.venue");
+		var venue_text = venue.text()
+		venue.length > 0 ? venue_text = venue + " @ Google Maps" : venue_text = "@ Google Maps";
 		
 		$(descr).children().each(function() {
 			$(this).removeClass();
@@ -370,12 +375,23 @@ $(document).bind('ready',function() {
 							.text(formatTitle(title))
 					)
 			)
-			.append($("<span />").append(descr.children()))
+			.append(
+				$("<span />")
+					.append(descr.children())
+			)
 			.append(
 				$("<a />")
 					.attr({"rel":"close","data-role":"button","href":"#"})
 					.text("Close")
 			)
+			
+		if(lat != 0) {
+			content.find("span").after(
+				$("<a />")
+					.attr({"id":"google_maps","href":google_maps_str,"target":"_blank"})
+					.text(venue_text)
+			)
+		}
 			
 		$('<div>').simpledialog2({
 			mode : 'blank',
