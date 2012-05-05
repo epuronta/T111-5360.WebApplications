@@ -127,19 +127,7 @@
 			popup(localStorageValue + " has been added as you favorite restaurant");
 	});
 	
-	/*$(document).bind( "pagebeforechange", function( e, data ) {
-		// http://jquerymobile.com/test/docs/pages/page-dynamic.html
-		if ( typeof data.toPage === "string" ) {
-			var urlObj = $.mobile.path.parseUrl( data.toPage )
-			pageSelector = urlObj.hash.replace( /\?.*$/, "" );
-			var $page = $( pageSelector )
-			$page.page();
-			data.options.dataUrl = pageSelector;
-			$.mobile.changePage( $page, data.options );
-			e.preventDefault()
-		}
-	});*/
-	
+
 	$(document).bind( "pagebeforeload", function( event, data ){
 		event.preventDefault();
 		data.deferred.resolve( data.absUrl, data.options, "launcher" );

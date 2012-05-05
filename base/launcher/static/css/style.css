@@ -40,6 +40,10 @@ and lunch/static/lunch/css for the subpage CSS files) ---- */
 	padding: 0px auto 3px auto !important;	
 }
 
+h4 {
+	margin: 1em !important;	
+}
+
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.ui-icon-events {
 		background-image:url(../img/events.png);
