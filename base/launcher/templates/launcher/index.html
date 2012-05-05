@@ -77,9 +77,14 @@ $(document).ready(function(){
 		type: "GET",
 		dataType: "json",
 			success: function(data) {
-				lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-				var favorite_lunchlist = $("<div/>").append(lunch_data);
-				var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
+				lunch_data = getLunchLists(localStorageValue, data.lunchlists, data.restaurants);
+				var hyperlink = lunch_data[0];
+				var favorite_lunchlist = $("<div/>").append(lunch_data[1]);
+				var restaurant = $('<a />')
+					.attr({"href":hyperlink,"target":"_blank"})
+					.text(localStorageValue);
+				var today = new Date();
+				var favorite_lunchlist_header = $("<h4/>").append(restaurant).append(" - today's lunch (" + today.getDate() + "." + today.getMonth() + "):");
 				$('#favorite_lunch')
 					.append(favorite_lunchlist_header)
 					.append(favorite_lunchlist);
@@ -89,20 +94,22 @@ $(document).ready(function(){
 
 function getStoreValue() {
     var item = localStorage.getItem(localStorageKey);
-    if (item != null && item.length != 0) {
+    if (item != null && item.length != 0)
 		localStorageValue = item;
-		}
-		return item;
+	return item;
 }
 
-function getLunchLists(restaurant_name,lunchlists) {
-		var lunch_data = "Lounastietoja ei saatavilla.";
-		for(lunchlist in lunchlists) {
-			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
-				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+function getLunchLists(restaurant_name,lunchlists, restaurants) {
+	var lunch_data = "No lunch menu available.";
+	var hyperlink = "";
+	for(lunchlist in lunchlists) {
+		if(restaurant_name == lunchlists[lunchlist].restaurant_id) {
+			lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+			hyperlink = restaurants[lunchlist].external_url;
 		}
-		return lunch_data;
 	}
+	return [hyperlink, lunch_data];
+}
 </script>
 
 </html>

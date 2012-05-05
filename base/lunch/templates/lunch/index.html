@@ -98,12 +98,16 @@
 							.append($("<h3 />").append(data.restaurants[restaurant].name)
 							.append(favorite_button))
 
-							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
-
+							var lunch_data = getLunchData(data.restaurants[restaurant].name, data.lunchlists, data.restaurants, data.openinghours);
 							regex = /(\d+(,\d+)*\s*€)/igm;
-							lunch_data = lunch_data.replace(regex,'');
-							
-							campus_restaurant.append(lunch_data);
+							var menu = lunch_data[1].replace(regex,'');
+							var hyperlink = lunch_data[0];
+							var openinghours_str;
+							lunch_data[2][0] !== undefined ? openinghours_str = "Open: " + lunch_data[2][0] + "-" + lunch_data[2][1] : openinghours_str = "Opening hours not available / Closed";
+							var title = $('<p />').append(openinghours_str + " ");
+							if(hyperlink.length > 0)
+								title.append($('<a />').attr({"href":hyperlink,"target":"_blank"}).text("more info"));
+							campus_restaurant.append(title).append(menu);
 							campus_restaurants.append(campus_restaurant);
 						}
 					}
@@ -133,13 +137,19 @@
 		data.deferred.resolve( data.absUrl, data.options, "launcher" );
 	});
 	
-	function getLunchLists(restaurant_name,lunchlists) {
-		var lunch_data = "Lounastietoja ei saatavilla.";
-		for(lunchlist in lunchlists) {
-			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
-				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+	function getLunchData(restaurant_name,lunchlists, restaurants, openinghours) {
+		var lunch_data = "No lunch menu available.";
+		var hyperlink = "";
+		var operating_hours = "";
+		for(index in lunchlists) {
+			if(restaurant_name == lunchlists[index].restaurant_id) {
+				lunch_data = '<ul>' + lunchlists[index].lunch + '</ul>'
+				hyperlink = restaurants[index].external_url;
+				operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+			}
 		}
-		return lunch_data;
+		console.log(lunch_data)
+		return [hyperlink, lunch_data, operating_hours];
 	}
 	
 	function popup( txt ) {
