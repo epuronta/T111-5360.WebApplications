@@ -69,15 +69,15 @@ $(document).ready(function(){
 		type: "GET",
 		dataType: "json",
 			success: function(data) {
-			var lunch_data = "Ravintola on suljettu tai lounastietoja ei muusta syystä ole saatavilla.";
-			lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-			var favorite_lunch = $("<div/>").attr({"id":'favorite_lunch'}).css({"background-color":"white", "margin":"4px", "padding": "1px 10px 6px 10px", "border-radius": "10px"})
-			var favorite_lunchlist = $("<div/>").append(lunch_data);
-			var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:").css({"margin-before": "5.33em"});
-			favorite_lunch.append(favorite_lunchlist_header);
-			favorite_lunch.append(favorite_lunchlist);
-			$('#content').append(favorite_lunch);
-			}				
+				var lunch_data = "Ravintola on suljettu tai lounastietoja ei muusta syystä ole saatavilla.";
+				lunch_data = getLunchLists(localStorageValue, data.lunchlists);
+				var favorite_lunch = $("<div/>").attr({"id":'favorite_lunch'}).css({"background-color":"white", "margin":"4px", "padding": "1px 10px 6px 10px", "border-radius": "10px"})
+				var favorite_lunchlist = $("<div/>").append(lunch_data);
+				var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
+				favorite_lunch.append(favorite_lunchlist_header);
+				favorite_lunch.append(favorite_lunchlist);
+				$('#content').append(favorite_lunch);
+				}				
 		})
 });
 
