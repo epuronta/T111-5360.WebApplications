@@ -100,14 +100,22 @@
 
 							var lunch_data = getLunchData(restaurant_current.name, data.lunchlists, data.openinghours);
 							regex = /(\d+(,\d+)*\s*€)/igm;
-							var menu = lunch_data[0].replace(regex,'');
+							if(typeof lunch_data[0] != 'object')
+								var menu = lunch_data[0].replace(regex,'')
+							else
+								var menu = "";
 							var hyperlink = restaurant_current.external_url;
 							var openinghours_str;
-							lunch_data[1][0] !== undefined ? openinghours_str = "Open: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Opening hours not available / Closed";
+							lunch_data[1][0] !== undefined ? openinghours_str = "Open today: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Probably closed today";
+							var info = "";
+							if(hyperlink.length > 0) 
+								var info = $('<a />').attr({"id":"info_icon","href":hyperlink,"target":"_blank"}).append($("<img />").attr("src","{{STATIC_URL}}lunch/img/info.png"));
 							var title = $('<p />').append(openinghours_str + " ");
-							if(hyperlink.length > 0)
-								title.append($('<a />').attr({"href":hyperlink,"target":"_blank"}).text("more info"));
-							campus_restaurant.append(title).append(menu);
+							var title_box = $("<div />")
+								.attr("id","title_box")
+								.append(info)
+								.append(title);
+							campus_restaurant.append(title_box).append(menu);
 							campus_restaurants.append(campus_restaurant);
 						}
 					}
@@ -138,7 +146,7 @@
 	});
 	
 	function getLunchData(restaurant_name, lunchlists, openinghours) {
-		var menu = "No lunch menu available.";
+		var menu = $("<p />").append("No lunch menu available.");
 		var hyperlink = "";
 		var operating_hours = "";
 		for(var index = 0; index < lunchlists.length; index += 1) {

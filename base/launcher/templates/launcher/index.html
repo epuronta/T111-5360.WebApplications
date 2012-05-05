@@ -53,11 +53,7 @@
         	<div id="favorite_lunch"></div>
     		<ul id="eventlist" data-role="listview" data-theme="b" data-divider-theme="b" data-inset="true"></ul>
         </div>
-        
-        <!--<footer data-role="footer" data-position="fixed">
-            
-        </footer>
-        -->
+
     </div>	
 </body>
 
@@ -87,10 +83,9 @@ $(document).ready(function(){
 					hyperlink = $('<a />').attr({"href":hyperlink,"target":"_blank"}).text(restaurant_name);
 				var favorite_lunchlist = $("<div/>").append(lunch_data[0]);
 				var today = new Date();
-				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today's lunch (" + today.getDate() + "." + today.getMonth() + "):");
-				$('#favorite_lunch')
-					.append(favorite_lunchlist_header)
-					.append(favorite_lunchlist);
+				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today " + today.getDate() + "." + today.getMonth());
+				$('#favorite_lunch').append(favorite_lunchlist_header).append(favorite_lunchlist);
+				$('#eventlist').listview('refresh');
 			}				
 		})
 });
@@ -103,7 +98,7 @@ function getStoreValue() {
 }
 
 function getLunchData(restaurant_name, lunchlists, openinghours) {
-	var menu = "No lunch menu available.";
+	var menu = $("<p />").append("No lunch menu available.");
 	var hyperlink = "";
 	var operating_hours = "";
 	if(lunchlists !== undefined) {

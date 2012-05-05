@@ -34,7 +34,7 @@
 
 .ui-collapsible-content ul {
 	margin:4px !important;
-	padding:6px !important;
+	padding:2px 2px 2px 20px !important
 }
 
 .ui-collapsible-content li {
@@ -42,4 +42,25 @@
 	margin-bottom:3px !important;	
 }
 
+#title_box a {
+	display:inline;
+	float:left;
+	margin-right:10px;
+	font-weight:bold !important;
+	margin-top:-5px;	
+}
 
+#title_box p {
+	font-weight:bold;	
+}
+
+#title_box img {
+	width:24px;
+	height:24px;	
+}
+
+/*#info_icon {
+	background-image:url(../img/info.png);
+	width:32px;
+	height:32px;	
+}*/

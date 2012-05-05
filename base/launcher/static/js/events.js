@@ -8,7 +8,7 @@ function getEvents(limit) {
 				console.log("Error, no events in data", data)
 				return;
 			}
-			data.events.sort(compareDates);
+			data.events.sort(compareDatesFunction);
 			displayEvents(data.events, limit);
 	}, error: function(jqXHR, textStatus, errorThrown) {
 		$('#loading').remove();
@@ -119,9 +119,9 @@ function displayEvents(events, limit) {
 		);
 	$('.ui-listview-filter').append(event_filter);
 	$("div[data-role='content']").children('form').attr("id","scrollable").css({"width":$("#tabs").outerWidth() + "!important"});
-	$("div[data-role='content']").children('ul').fadeIn("slow");
 	$('#eventlist').listview('refresh');
 	$('#loading').remove();
+	$("div[data-role='content']").children('ul').fadeIn("slow");
 }
 
 function countSameDates(event, events) {
@@ -131,6 +131,15 @@ function countSameDates(event, events) {
 			count++;
 	}
 	return count;
+}
+
+function compareDatesFunction(evt1, evt2) {
+	d1 = createDate(evt1.start_date);
+	d2 = createDate(evt2.start_date);
+	d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(),d1.getHours(),0,0,0);
+	d2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(),d2.getHours(),0,0,0);
+	var one_day=1000*60*60*24;
+	return d1.getTime()-d2.getTime();
 }
 
 function compareDates(evt1, evt2) {
@@ -163,8 +172,8 @@ function createDate(str) {
 
 function getDaysTillEvent(event_date) {
 	var today = new Date();
-	today = new Date(today.getFullYear(), today.getMonth(),today.getDate(), today.getHours(),0,0,0);
-	var days_left = -compareDatesString(today, event_date);
+	today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
+	var days_left = event_date.getDate()-today.getDate();
 	if(days_left < 0)
 		return "past"
 	else if(days_left == 0)
@@ -334,7 +343,7 @@ $(".popup").live("tap", "click", function() {
 	$('<div>').simpledialog2({
 		mode : 'blank',
 		top : 0,
-		headerText : start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
+		headerText : start_date.getDate() + "." + (start_date.getMonth()+1) + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
 		headerClose : true,
 		blankContent : content.children(),
 		callbackOpen : removeScrollEffect()
