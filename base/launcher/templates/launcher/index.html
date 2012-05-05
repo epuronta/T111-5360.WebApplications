@@ -70,21 +70,24 @@ var weekday = d.getDay();
 
 $(document).ready(function(){
 	getEvents(5);
-	localStorageValue = getStoreValue();
+	restaurant_name = getStoreValue();
 	var ajax_url = "/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
 		$.ajax({
 		url: ajax_url,
 		type: "GET",
 		dataType: "json",
 			success: function(data) {
-				lunch_data = getLunchLists(localStorageValue, data.lunchlists, data.restaurants);
-				var hyperlink = lunch_data[0];
-				var favorite_lunchlist = $("<div/>").append(lunch_data[1]);
-				var restaurant = $('<a />')
-					.attr({"href":hyperlink,"target":"_blank"})
-					.text(localStorageValue);
+				var lunch_data = getLunchData(restaurant_name, data.lunchlists, data.openinghours);
+				var hyperlink = "";
+				for(var index = 0; index < data.restaurants.length; index += 1) {
+					if(restaurant_name == data.restaurants[index].name)
+						hyperlink = data.restaurants[index].external_url;
+				}
+				if(hyperlink.length > 0)
+					hyperlink = $('<a />').attr({"href":hyperlink,"target":"_blank"}).text(restaurant_name);
+				var favorite_lunchlist = $("<div/>").append(lunch_data[0]);
 				var today = new Date();
-				var favorite_lunchlist_header = $("<h4/>").append(restaurant).append(" - today's lunch (" + today.getDate() + "." + today.getMonth() + "):");
+				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today's lunch (" + today.getDate() + "." + today.getMonth() + "):");
 				$('#favorite_lunch')
 					.append(favorite_lunchlist_header)
 					.append(favorite_lunchlist);
@@ -99,17 +102,26 @@ function getStoreValue() {
 	return item;
 }
 
-function getLunchLists(restaurant_name,lunchlists, restaurants) {
-	var lunch_data = "No lunch menu available.";
+function getLunchData(restaurant_name, lunchlists, openinghours) {
+	var menu = "No lunch menu available.";
 	var hyperlink = "";
-	for(lunchlist in lunchlists) {
-		if(restaurant_name == lunchlists[lunchlist].restaurant_id) {
-			lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
-			hyperlink = restaurants[lunchlist].external_url;
+	var operating_hours = "";
+	if(lunchlists !== undefined) {
+		for(var index = 0; index < lunchlists.length; index += 1) {
+			if(restaurant_name == lunchlists[index].restaurant_id) 
+				menu = '<ul>' + lunchlists[index].lunch + '</ul>'
 		}
 	}
-	return [hyperlink, lunch_data];
+	if(openinghours !== undefined) {
+		for(var index = 0; index < openinghours.length; index += 1) {
+			if(restaurant_name == openinghours[index].restaurant_id) 
+				operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+		}
+	}
+	//console.log(lunch_data)
+	return [menu, operating_hours];
 }
+	
 </script>
 
 </html>
