@@ -18,14 +18,18 @@
     
     <title>AaltoMobile > Home</title>
     
-    <link rel="apple-touch-icon" href="{{ STATIC_URL }}launcher/touch-icon.png"/>
-	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}launcher/img/splash.png"/>
+    <link rel="apple-touch-icon" href="{{ STATIC_URL }}img/touch-icon.png"/>
+	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}img/splash.png"/>
     
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/events.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.simpledialog.css" /> 
     
 	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/events.js"></script>
     
 <body>
     
@@ -34,7 +38,9 @@
         <header data-role="header">
             <h1>AaltoMobile</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+            <p id="credits">T-111.5360<br>WWW Applications<br><a href="http://sci.aalto.fi/" target="_blank">@ Aalto SCI</a></p>
         </header>
+        
         <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}"  data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -44,13 +50,14 @@
         </div>
         
         <div id="content" data-role="content">
-            
+        	<div id="favorite_lunch"></div>
+    		<ul id="eventlist" data-role="listview" data-theme="b" data-divider-theme="b" data-inset="true"></ul>
         </div>
         
-        <footer data-role="footer" data-position="fixed">
-            <p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
+        <!--<footer data-role="footer" data-position="fixed">
+            
         </footer>
-        
+        -->
     </div>	
 </body>
 
@@ -62,7 +69,7 @@ var d = new Date();
 var weekday = d.getDay();
 
 $(document).ready(function(){
-	console.log("moh");
+	getEvents(5);
 	localStorageValue = getStoreValue();
 	var ajax_url = "/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
 		$.ajax({
@@ -71,12 +78,12 @@ $(document).ready(function(){
 		dataType: "json",
 			success: function(data) {
 				var lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-				var favorite_lunch = $("<div/>").attr({"id":'favorite_lunch'}).css({"background-color":"white", "margin":"4px", "padding": "1px 10px 6px 12px", "border-radius": "10px"})
 				var favorite_lunchlist = $("<div/>").append(lunch_data);
 				var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
-				favorite_lunch.append(favorite_lunchlist_header);
-				favorite_lunch.append(favorite_lunchlist);
-				$('#content').append(favorite_lunch);
+				$('#favorite_lunch')
+					.css({"background-color":"white", "margin":"4px", "padding": "1px 10px 6px 12px", "border-radius": "10px"})
+					.append(favorite_lunchlist_header)
+					.append(favorite_lunchlist);
 			}				
 		})
 });
