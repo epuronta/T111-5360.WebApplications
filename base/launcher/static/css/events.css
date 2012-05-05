@@ -85,7 +85,11 @@ li.popup a {
 	color:#09F !important;
 }
 
-.ui-simpledialog-container h1, h2, h3, h4, h5 {
+.ui-simpledialog-container h1, 
+.ui-simpledialog-container h2, 
+.ui-simpledialog-container h3, 
+.ui-simpledialog-container h4, 
+.ui-simpledialog-container h5 {
 	font-size:1em;	
 	margin: 12px 2% 10px 2% !important;
 }
