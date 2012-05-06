@@ -23,6 +23,7 @@
     <script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/events.js"></script>
 
     <!--<script src="http://www.openlayers.org/api/OpenLayers.js"></script>-->
     <script src="http://openlayers.org/dev/OpenLayers.mobile.js"></script>
@@ -60,20 +61,36 @@
 
         .olControlZoom {
             position: absolute;
-            left: 0;
-            top: 0;
+            left: 5px;
+            top: 5px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 5px;
+            padding: 2px;
         }
 
         .olControlZoom .olButton {
-            font-size: 2em;
-            width: 1em;
-            height: 1em;
-            display: block;
-            margin: 5px;
+            font-size: 28px;
+            line-height: 28px;
+            width: 32px;
+            height: 32px;
             text-align: center;
+            text-weight: bold;
+            display: block;
+            margin: 1px;
+            padding: 0;
 
-            border-radius: 5px;
-            background: rgba(255,255,255,0.5);
+            background: rgba(100,100,255,0.5);
+            color: rgba(255,255,255,0);
+        }
+        .olButton:hover {
+            background: rgba(100,100,255, 0.7);
+        }
+        
+        .olControlZoomIn {
+            border-radius: 5px 5px 0 0;
+        }
+        .olControlZoomOut {
+            border-radius: 0 0 5px 5px;
         }
 
 
@@ -83,8 +100,10 @@
 <body>
 <div data-role="page" id="mappage" class="page">
 
-    <div class="header" data-role="header">
-        <h2>Header</h2>
+    <div data-role="header">
+        <h1>Events</h1>
+        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+        <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
     </div>
     
     <div data-role="content" class="content">
@@ -99,10 +118,28 @@ $(document).ready(function() {
     getEvents(draw_map)
 });
 
+function formatDate(date) {
+    var str = date.getFullYear() + "-";
+    if (date.getMonth() < 9) str += "0";
+    str += (parseInt(date.getMonth()) + 1) + "-"
+    if (date.getDate() < 10) str += "0";
+    str += date.getDate() + "T"
+    if (date.getHours < 10) str += "0";
+    str += date.getHours() + ":";
+    if (date.getMinutes() < 10) str += "0";
+    str += date.getMinutes() + ":" ;
+    if (date.getSeconds() < 10) str += "0";
+    str += date.getSeconds();
+    
+    return str;
+}
+
 function getEvents(callback) {
     $("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
+    var startDate = new Date();
+    var endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     $.ajax({
-            url: "/api/events/",
+            url: "/api/events/?start_date=" + formatDate(startDate) + "&end_date=" + formatDate(endDate),
             type: "GET",
             dataType: "json",
             success: function(data) {
@@ -120,7 +157,7 @@ function getEvents(callback) {
 
 function draw_map(events) {
 
-    map = new OpenLayers.Map({
+    var map = new OpenLayers.Map({
         div: "basicmap",
         theme: null,
         controls: [
@@ -136,43 +173,35 @@ function draw_map(events) {
             new OpenLayers.Layer.OSM("OpenStreetMap", null, {
                 transitionEffect: 'resize'
             })
-        ], // Center to Otaniemi
-        center: get_lonlat(24.822759,60.187109),
-        zoom: 14
+        ]
     });
-    map.addLayer(get_event_layer(events));
-
-}
-
-
-function get_lonlat(lon, lat) {
-    return new OpenLayers.LonLat(lon, lat) // Center of the map
+    map.setCenter(
+        new OpenLayers.LonLat(24.822759,60.187109) // Center of the map
             .transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
-            );
-}
-
-function get_event_vector(event) {
-    var v = new OpenLayers.Feature.Vector(
-                new OpenLayers.Geometry.Point(event.lon, event.lat),
-                {},
-                {
-                    graphicName: "circle",
-                    strokeColor: "red",
-                    strokeWidth: 10,
-                    fillOpacity: 100,
-                    pointRadius: 100
-                }
-            );
-
-    return v;
-}
-
-function get_event_layer(events) {    
+                //new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
+                map.getProjectionObject()
+            ), 15);
+    
     var layer = new OpenLayers.Layer.Vector("Vector Layer");
     
-    vectors = [];
+    layer.events.on({
+        "featureselected": function(event) {
+            $("<div />").simpledialog2({
+                mode : "blank",
+                showModal: false,
+                top : 0,
+                zindex: 10000,                
+                //headerText : event.feature.data.name,
+                headerClose : true,
+                blankContent : "<h3>" + event.feature.data.name + "</h3><p>" + event.feature.data.descr + "</p>"
+            });            
+            
+        }
+    });
+    
+    var vectors = [];
+    console.log("Creating event layer for " + events.length + " events");
     for(var i = 0; i < events.length; i++) {
         var event = events[i];
         if(event.lat == "0" || event.lon == "0") {
@@ -180,14 +209,52 @@ function get_event_layer(events) {
             continue;
         }
 
-        vector = get_event_vector(event);
+        var vector = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(event.lon, event.lat)
+                    .transform(
+                        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                        map.getProjectionObject()
+                    ),
+                {
+                    name: formatTitle(event.title),
+                    descr: event.descr
+                },
+                {
+                    graphicName: "circle",
+                    pointRadius: "10px",
+                    
+                    fillOpacity: 0.8,
+                    fillColor: "#aaaaff",
+                    
+                    strokeColor: "#bbbbff",
+                    strokeWidth: 2,
+                    strokeOpacity: 1,
+                    
+                    label: formatTitle(event.title).substring(0,30),
+                    fontOpacity: 0.8,
+                    fontSize: "0.8em",
+                    labelAlign: "lm" // Left-middle
+                }
+            );
         
         vectors.push(vector);
-    }
-    layer.addFeatures(vectors);
+    }    
+    layer.addFeatures(vectors); 
+    map.addLayer(layer);
 
-    return layer;
-}    
+    var selectcontrol = new OpenLayers.Control.SelectFeature(
+        layer,
+        {
+            clickout: true,
+            toggle: false,
+            hover: false,
+            multiple: false,
+        }
+    );
+    map.addControl(selectcontrol);
+    selectcontrol.activate();
+}
+
 </script>
 
 
