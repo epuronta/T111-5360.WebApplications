@@ -149,15 +149,18 @@
 		var menu = $("<p />").append("No lunch menu available.");
 		var hyperlink = "";
 		var operating_hours = "";
-		for(var index = 0; index < lunchlists.length; index += 1) {
-			if(restaurant_name == lunchlists[index].restaurant_id) 
-				menu = '<ul>' + lunchlists[index].lunch + '</ul>'
+		if(lunchlists !== undefined) {
+			for(var index = 0; index < lunchlists.length; index += 1) {
+				if(restaurant_name == lunchlists[index].restaurant_id) 
+					menu = '<ul>' + lunchlists[index].lunch + '</ul>'
+			}
 		}
-		for(var index = 0; index < openinghours.length; index += 1) {
-			if(restaurant_name == openinghours[index].restaurant_id) 
-				operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+		if(openinghours !== undefined) {
+			for(var index = 0; index < openinghours.length; index += 1) {
+				if(restaurant_name == openinghours[index].restaurant_id) 
+					operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+			}
 		}
-		//console.log(lunch_data)
 		return [menu, operating_hours];
 	}
 	
