@@ -172,8 +172,11 @@ function createDate(str) {
 
 function getDaysTillEvent(event_date) {
 	var today = new Date();
-	today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
-	var days_left = event_date.getDate()-today.getDate();
+	today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),18,0,0,0);
+	// workaround for events that start at 00:00:00 (typically full day events. Lets set the clock time to 18:00:00)
+	var temp = new Date(event_date.getFullYear(), event_date.getMonth(), event_date.getDate(),18,0,0,0);
+	
+	var days_left = compareDatesString(temp, today);
 	if(days_left < 0)
 		return "past"
 	else if(days_left == 0)
