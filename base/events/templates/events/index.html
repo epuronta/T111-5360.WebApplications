@@ -18,7 +18,7 @@
     
     <title>AaltoMobile > Events</title>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}events/css/events.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/events.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.simpledialog.css" /> 
     
@@ -30,7 +30,7 @@
 	</script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}events/js/events.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/events.js"></script>
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
@@ -47,7 +47,7 @@
             </ul>
         </div>
         
-        <div data-role="content" id="list">
+        <div data-role="content">
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b"></ul>
         </div>
     </div>
@@ -63,8 +63,9 @@
 };*/
 
 $(document).bind('ready',function() {
+	$("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
 	addScrollEffect();
-	getEvents(999999999,0);
+	getEvents(999999);
 });
 
 $(document).bind( "pagebeforeload", function( event, data ){

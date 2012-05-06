@@ -95,15 +95,27 @@
 							var favorite_button = $("<img />").attr({"src":"{{STATIC_URL}}lunch/img/favorite.png","id":restaurant_current.name,"class":"favorite_button","align":"right","alt":"Add as your favorite restaurant"})
 							
 							campus_restaurant							
-							.append($("<h3 />").append(data.restaurants[restaurant].name)
+							.append($("<h3 />").append(restaurant_current.name)
 							.append(favorite_button))
 
-							var lunch_data = getLunchLists(data.restaurants[restaurant].name, data.lunchlists);
-
+							var lunch_data = getLunchData(restaurant_current.name, data.lunchlists, data.openinghours);
 							regex = /(\d+(,\d+)*\s*€)/igm;
-							lunch_data = lunch_data.replace(regex,'');
-							
-							campus_restaurant.append(lunch_data);
+							if(typeof lunch_data[0] != 'object')
+								var menu = lunch_data[0].replace(regex,'')
+							else
+								var menu = "";
+							var hyperlink = restaurant_current.external_url;
+							var openinghours_str;
+							lunch_data[1][0] !== undefined ? openinghours_str = "Open today: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Probably closed today";
+							var info = "";
+							if(hyperlink.length > 0) 
+								var info = $('<a />').attr({"id":"info_icon","href":hyperlink,"target":"_blank"}).append($("<img />").attr("src","{{STATIC_URL}}lunch/img/info.png"));
+							var title = $('<p />').append(openinghours_str + " ");
+							var title_box = $("<div />")
+								.attr("id","title_box")
+								.append(info)
+								.append(title);
+							campus_restaurant.append(title_box).append(menu);
 							campus_restaurants.append(campus_restaurant);
 						}
 					}
@@ -133,13 +145,23 @@
 		data.deferred.resolve( data.absUrl, data.options, "launcher" );
 	});
 	
-	function getLunchLists(restaurant_name,lunchlists) {
-		var lunch_data = "Lounastietoja ei saatavilla.";
-		for(lunchlist in lunchlists) {
-			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
-				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+	function getLunchData(restaurant_name, lunchlists, openinghours) {
+		var menu = $("<p />").append("No lunch menu available.");
+		var hyperlink = "";
+		var operating_hours = "";
+		if(lunchlists !== undefined) {
+			for(var index = 0; index < lunchlists.length; index += 1) {
+				if(restaurant_name == lunchlists[index].restaurant_id) 
+					menu = '<ul>' + lunchlists[index].lunch + '</ul>'
+			}
 		}
-		return lunch_data;
+		if(openinghours !== undefined) {
+			for(var index = 0; index < openinghours.length; index += 1) {
+				if(restaurant_name == openinghours[index].restaurant_id) 
+					operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+			}
+		}
+		return [menu, operating_hours];
 	}
 	
 	function popup( txt ) {

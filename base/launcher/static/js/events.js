@@ -1,7 +1,6 @@
-function getEvents(limit, offset) {
-	$("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
+function getEvents(limit) {
 	$.ajax({
-		url: "/api/events/?limit=" + limit + "&offset=" + offset,
+		url: "/api/events/?limit=999999&offset=0",
 		type: "GET",
 		dataType: "json",
 		success: function(data) {
@@ -9,8 +8,8 @@ function getEvents(limit, offset) {
 				console.log("Error, no events in data", data)
 				return;
 			}
-			data.events.sort(compareDates);
-			displayEvents(data.events);
+			data.events.sort(compareDatesFunction);
+			displayEvents(data.events, limit);
 	}, error: function(jqXHR, textStatus, errorThrown) {
 		$('#loading').remove();
 		console.log(jqXHR, textStatus, errorThrown);
@@ -18,7 +17,9 @@ function getEvents(limit, offset) {
 	});
 }
 
-function displayEvents(events) {
+function displayEvents(events, limit) {
+	var how_many = limit;
+	
 	var weekday=new Array(7);
 	weekday[0]="Sunday";
 	weekday[1]="Monday";
@@ -47,15 +48,16 @@ function displayEvents(events) {
 		var start_date = createDate(event.start_date);
 		if(i == 0 || compareDates(event, events[i-1])) {
 			//var count = countSameDates(event, events);
-			divider = $("<li />");
-			divider
+			divider = $("<li />")
 				.addClass("ui-li-divider")
 				.attr({"data-role":"list-divider","role":"heading"})
 				.text(weekday[start_date.getDay()] + " " + start_date.getDate() + "." + (start_date.getMonth()+1))
 			//divider.append($("<span />").addClass("ui-li-count").text(count));
 		}
+		
 		title = formatTitle(event.title);
 		start_time = formatTime(start_date.getHours());
+		
 		var container = $("<li />")
 			.addClass("popup")
 			.append(
@@ -70,11 +72,10 @@ function displayEvents(events) {
 						$("<span />").text(" " + title)
 				)
 			);
+		
 		var icon = "false"
-		if(event.remote_source_name == "AaltoEvents")
-			icon = "evt-icon-aalto";
-		else if(event.remote_source_name == "ayy")
-			icon = "evt-icon-ayy"; 
+		event.remote_source_name == "AaltoEvents" ? icon = "evt-icon-aalto" : icon = "evt-icon-ayy";
+		
 		for(prop in event) {
 			container
 				.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"})
@@ -86,16 +87,20 @@ function displayEvents(events) {
 						.html(event[prop])
 					);
 		}
+		
 		var today = new Date();
 		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
 		if(compareDatesString(today, start_date) >= 0) {
-			if(divider != "")
-				divider.addClass("past");
+			if(divider != "") divider.addClass("past");
 			container.addClass("past");
 		}
-		else
-			container.addClass("visible");
-		$("#list").children("ul").hide().append(divider).append(container).fadeIn("slow");
+		else {
+			how_many > 0 ? container.addClass("visible") : container.addClass("hidden")
+			if(how_many <= 0 && divider != "") divider.addClass("hidden");
+			how_many -= 1;
+		}
+		
+		$("div[data-role='content']").children("ul").hide().append(divider).append(container);
 	}
 	
 	var event_filter = $("<div />")
@@ -113,9 +118,10 @@ function displayEvents(events) {
 				.addClass("filter active")
 		);
 	$('.ui-listview-filter').append(event_filter);
-	$('#list').children('form').attr("id","scrollable").css({"width":$("#tabs").outerWidth() + "!important"});
+	$("div[data-role='content']").children('form').attr("id","scrollable").css({"width":$("#tabs").outerWidth() + "!important"});
 	$('#eventlist').listview('refresh');
 	$('#loading').remove();
+	$("div[data-role='content']").children('ul').fadeIn("slow");
 }
 
 function countSameDates(event, events) {
@@ -125,6 +131,15 @@ function countSameDates(event, events) {
 			count++;
 	}
 	return count;
+}
+
+function compareDatesFunction(evt1, evt2) {
+	d1 = createDate(evt1.start_date);
+	d2 = createDate(evt2.start_date);
+	d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(),d1.getHours(),0,0,0);
+	d2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(),d2.getHours(),0,0,0);
+	var one_day=1000*60*60*24;
+	return d1.getTime()-d2.getTime();
 }
 
 function compareDates(evt1, evt2) {
@@ -157,8 +172,11 @@ function createDate(str) {
 
 function getDaysTillEvent(event_date) {
 	var today = new Date();
-	today = new Date(today.getFullYear(), today.getMonth(),today.getDate(), today.getHours(),0,0,0);
-	var days_left = -compareDatesString(today, event_date);
+	today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),18,0,0,0);
+	// workaround for events that start at 00:00:00 (typically full day events. Lets set the clock time to 18:00:00)
+	var temp = new Date(event_date.getFullYear(), event_date.getMonth(), event_date.getDate(),18,0,0,0);
+	
+	var days_left = compareDatesString(temp, today);
 	if(days_left < 0)
 		return "past"
 	else if(days_left == 0)
@@ -328,7 +346,7 @@ $(".popup").live("tap", "click", function() {
 	$('<div>').simpledialog2({
 		mode : 'blank',
 		top : 0,
-		headerText : start_date.getDate() + "." + start_date.getMonth() + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
+		headerText : start_date.getDate() + "." + (start_date.getMonth()+1) + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
 		headerClose : true,
 		blankContent : content.children(),
 		callbackOpen : removeScrollEffect()

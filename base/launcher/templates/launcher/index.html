@@ -18,14 +18,18 @@
     
     <title>AaltoMobile > Home</title>
     
-    <link rel="apple-touch-icon" href="{{ STATIC_URL }}launcher/touch-icon.png"/>
-	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}launcher/img/splash.png"/>
+    <link rel="apple-touch-icon" href="{{ STATIC_URL }}img/touch-icon.png"/>
+	<link rel="apple-touch-startup-image" href="{{ STATIC_URL }}img/splash.png"/>
     
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/events.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.simpledialog.css" /> 
     
 	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.mobile.simpledialog2.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/events.js"></script>
     
 <body>
     
@@ -34,7 +38,9 @@
         <header data-role="header">
             <h1>AaltoMobile</h1>
             <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+            <p id="credits">T-111.5360<br>WWW Applications<br><a href="http://sci.aalto.fi/" target="_blank">@ Aalto SCI</a></p>
         </header>
+        
         <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}"  data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -44,13 +50,10 @@
         </div>
         
         <div id="content" data-role="content">
-            
+        	<div id="favorite_lunch"></div>
+    		<ul id="eventlist" data-role="listview" data-theme="b" data-divider-theme="b" data-inset="true"></ul>
         </div>
-        
-        <footer data-role="footer" data-position="fixed">
-            <p>T-111.5360 WWW Applications<br>Project work<br><a href="http://sci.aalto.fi/" target="_blank">Aalto University School of Science</a></p>
-        </footer>
-        
+
     </div>	
 </body>
 
@@ -62,41 +65,58 @@ var d = new Date();
 var weekday = d.getDay();
 
 $(document).ready(function(){
-	localStorageValue = getStoreValue();
+	getEvents(5);
+	restaurant_name = getStoreValue();
 	var ajax_url = "/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
 		$.ajax({
 		url: ajax_url,
 		type: "GET",
 		dataType: "json",
 			success: function(data) {
-				var lunch_data = "Ravintola on suljettu tai lounastietoja ei muusta syystä ole saatavilla.";
-				lunch_data = getLunchLists(localStorageValue, data.lunchlists);
-				var favorite_lunch = $("<div/>").attr({"id":'favorite_lunch'}).css({"background-color":"white", "padding": "1px 7px 4px 7px", "border-radius": "10px"})
-				var favorite_lunchlist = $("<div/>").append(lunch_data);
-				var favorite_lunchlist_header = $("<h4/>").append(localStorageValue + " tarjoaa tänään:");
-				favorite_lunch.append(favorite_lunchlist_header);
-				favorite_lunch.append(favorite_lunchlist);
-				$('#content').append(favorite_lunch);
-				}				
+				var lunch_data = getLunchData(restaurant_name, data.lunchlists, data.openinghours);
+				var hyperlink = "";
+				for(var index = 0; index < data.restaurants.length; index += 1) {
+					if(restaurant_name == data.restaurants[index].name)
+						hyperlink = data.restaurants[index].external_url;
+				}
+				if(hyperlink.length > 0)
+					hyperlink = $('<a />').attr({"href":hyperlink,"target":"_blank"}).text(restaurant_name);
+				var favorite_lunchlist = $("<div/>").append(lunch_data[0]);
+				var today = new Date();
+				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today " + today.getDate() + "." + today.getMonth());
+				$('#favorite_lunch').append(favorite_lunchlist_header).append(favorite_lunchlist);
+				$('#eventlist').listview('refresh');
+			}				
 		})
 });
 
 function getStoreValue() {
     var item = localStorage.getItem(localStorageKey);
-    if (item != null && item.length != 0) {
+    if (item != null && item.length != 0)
 		localStorageValue = item;
-		}
-		return item;
+	return item;
 }
 
-function getLunchLists(restaurant_name,lunchlists) {
-		var lunch_data = "Lounastietoja ei saatavilla.";
-		for(lunchlist in lunchlists) {
-			if(restaurant_name == lunchlists[lunchlist].restaurant_id)
-				lunch_data = '<ul>' + lunchlists[lunchlist].lunch + '</ul>'
+function getLunchData(restaurant_name, lunchlists, openinghours) {
+	var menu = $("<p />").append("No lunch menu available.");
+	var hyperlink = "";
+	var operating_hours = "";
+	if(lunchlists !== undefined) {
+		for(var index = 0; index < lunchlists.length; index += 1) {
+			if(restaurant_name == lunchlists[index].restaurant_id) 
+				menu = '<ul>' + lunchlists[index].lunch + '</ul>'
 		}
-		return lunch_data;
 	}
+	if(openinghours !== undefined) {
+		for(var index = 0; index < openinghours.length; index += 1) {
+			if(restaurant_name == openinghours[index].restaurant_id) 
+				operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+		}
+	}
+	//console.log(lunch_data)
+	return [menu, operating_hours];
+}
+	
 </script>
 
 </html>

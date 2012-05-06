@@ -7,12 +7,6 @@ body { background: black; color: white; font-weight: bold; }
 
 a { text-decoration:none;}
 
-footer p { float:right; font-size:0.5em; text-align:left;line-height:1.4em; margin-right:2%; }
-
-footer p a:hover {
-	color:#0CF !important;	
-}
-
 .hidden {	
 	display:none !important;
 }
@@ -23,6 +17,12 @@ footer p a:hover {
 
 /* ---- launcher page (check events/static/events/css 
 and lunch/static/lunch/css for the subpage CSS files) ---- */
+
+#credits { position:absolute !important; top:0 !important; left:0 !important; font-size:0.5em !important; text-align:left !important; line-height:1.4em !important; margin: 5px 0px 5px 5px !important; }
+
+#credits a:hover {
+	color:#0CF !important;	
+}
 
 #tabs a img {
 	width:18px;
@@ -40,13 +40,42 @@ and lunch/static/lunch/css for the subpage CSS files) ---- */
 	padding: 0px auto 3px auto !important;	
 }
 
-h4 {
-	margin: 1em !important;
-	font-size:0.8em;
+#favorite_lunch {
+	background-image: linear-gradient(bottom, rgb(241,241,241) 3%, rgb(252,252,252) 37%);
+	background-image: -o-linear-gradient(bottom, rgb(241,241,241) 3%, rgb(252,252,252) 37%);
+	background-image: -moz-linear-gradient(bottom, rgb(241,241,241) 3%, rgb(252,252,252) 37%);
+	background-image: -webkit-linear-gradient(bottom, rgb(241,241,241) 3%, rgb(252,252,252) 37%);
+	background-image: -ms-linear-gradient(bottom, rgb(241,241,241) 3%, rgb(252,252,252) 37%);
+	
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.03, rgb(241,241,241)),
+		color-stop(0.37, rgb(252,252,252))
+	);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	border-radius: 10px;
 }
 
-li {
-	font-size:0.8em;
+#favorite_lunch ul {
+	padding:0 !important;	
+	margin:0 !important;
+}
+
+#favorite_lunch div {
+	font-family:Helvetica,Arial,sans-serif;
+	font-size:9pt !important;
+	font-shadow: 0 1px 0 white;
+	font-weight:bold;
+	color:#2F3E46;
+	padding:5px 10px 10px 30px !important;
+}
+
+#favorite_lunch h4 {
+	margin:0;
+	padding:10px 10px 5px 10px !important;
+	font-size:11pt !important;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {

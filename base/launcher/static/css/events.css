@@ -56,12 +56,34 @@ form {
 	background-repeat:no-repeat;
 }
 
+li.popup {
+	height:33px !important;	
+}
+
+li.popup a {
+	font-size: 9pt !important;
+}
+
 .ui-li-divider {
 	font-size:0.8em !important;
 	padding:6px !important;
 }
 
-.ui-simpledialog-container { word-wrap: break-word !important; }
+.ui-simpledialog-container { 
+	word-wrap: break-word !important; 
+	background-image: linear-gradient(bottom, rgb(245,245,245) 12%, rgb(235,232,235) 64%) !important; 
+	background-image: -o-linear-gradient(bottom, rgb(245,245,245) 12%, rgb(235,232,235) 64%) !important;
+	background-image: -moz-linear-gradient(bottom, rgb(245,245,245) 12%, rgb(235,232,235) 64%) !important;
+	background-image: -webkit-linear-gradient(bottom, rgb(245,245,245) 12%, rgb(235,232,235) 64%) !important;
+	background-image: -ms-linear-gradient(bottom, rgb(245,245,245) 12%, rgb(235,232,235) 64%) !important;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.12, rgb(245,245,245)),
+		color-stop(0.64, rgb(235,232,235))
+	) !important;
+}
 
 .ui-simpledialog-container div.ui-header {
 	margin:0 !important;
@@ -77,7 +99,11 @@ form {
 	color:#09F !important;
 }
 
-.ui-simpledialog-container h1, h2, h3, h4, h5 {
+.ui-simpledialog-container h1, 
+.ui-simpledialog-container h2, 
+.ui-simpledialog-container h3, 
+.ui-simpledialog-container h4, 
+.ui-simpledialog-container h5 {
 	font-size:1em;	
 	margin: 12px 2% 10px 2% !important;
 }
