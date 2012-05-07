@@ -35,7 +35,7 @@
     <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
-                <li><a href="{% url eventsmap-index-view %}"  data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events map</a></li>
+                <li><a href="{% url eventsmap-index-view %}"  data-prefetch rel="external"><img src="{{ STATIC_URL }}img/eventsmap.png"/>Events map</a></li>
                 <li><a href="{% url lunch-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/lunch.png"/>Lunch</a></li>
             </ul>
     </div>
@@ -65,13 +65,37 @@
 	var weekday = d.getDay();
 		
 	$(document).ready(function(event) {
+		
+		// creating the 3 navigational tabs dynamically
+		var tabs = $('<div />').attr({"id":"tabs","data-role":"navbar","data-iconpos":"top"})
+			.append($("<ul />")
+				.append($("<li />")
+					.append($("<a />").attr({"href":"{% url events-index-view %}","data-prefetch":"","rel":"external"})
+						.append($("<img />").attr({"src":"{{STATIC_URL}}img/events.png","alt":"JEEEEE"}))
+						.append("Events")
+					)
+				)
+				.append($("<li />")
+					.append($("<a />").attr({"href":"{% url eventsmap-index-view %}","data-prefetch":"","rel":"external"})
+						.append($("<img />").attr({"src":"{{STATIC_URL}}img/eventsmap.png"}))
+						.append("Events map")
+					)
+				)
+				.append($("<li />")
+					.append($("<a />").attr({"href":"{% url lunch-index-view %}","data-prefetch":"","rel":"external"})
+						.append($("<img />").attr({"src":"{{STATIC_URL}}img/lunch.png"}))
+						.append("Lunch")
+					)
+				)
+			)
+		
 		$.ajax({
 			url: "/api/lunch/search/?weekday=" + weekday,
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
 				for(campus in campuses){
-					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b'})
+					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b',"class":"lunch_subpage"})
 					var campus_header = $("<div />")
 						.attr({"data-role":'header'})
 						.append($("<h1 />")
@@ -125,18 +149,20 @@
 						.attr("id",campus_urls[campus])
 						.append(campus_header)
 						.append(campus_content)
-
 					$('body').append(campus_page)
-					
+					console.log(tabs)
 				}
+				// append the navigational tabs to each lunch subpage
+				$("div[data-role='page'][class='lunch_subpage']").children("div[data-role='header']").after(tabs)
 			}	
 		})
+		
 	});
 	
 	$(".favorite_button").live("click", function(){
-			localStorageValue = this.id;
-			localStorage.setItem(localStorageKey, localStorageValue)
-			popup(localStorageValue + " has been added as you favorite restaurant");
+		localStorageValue = this.id;
+		localStorage.setItem(localStorageKey, localStorageValue)
+		popup(localStorageValue + " has been added as you favorite restaurant");
 	});
 	
 

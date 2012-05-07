@@ -144,8 +144,8 @@ function getEvents(callback) {
             dataType: "json",
             success: function(data) {
                     if(!data.events) {
-                            console.log("Error, no events in data", data)
-                            return;
+                    	console.log("Error, no events in data", data)
+                    	return;
                     }
                     callback(data.events);
     }, error: function(jqXHR, textStatus, errorThrown) {
@@ -176,12 +176,12 @@ function draw_map(events) {
         ]
     });
     map.setCenter(
-        new OpenLayers.LonLat(24.822759,60.187109) // Center of the map
+        new OpenLayers.LonLat(24.892759,60.174109) // Center of the map
             .transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 //new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
                 map.getProjectionObject()
-            ), 15);
+            ), 13);
     
     var layer = new OpenLayers.Layer.Vector("Vector Layer");
     
@@ -254,6 +254,11 @@ function draw_map(events) {
     map.addControl(selectcontrol);
     selectcontrol.activate();
 }
+
+$(document).bind( "pagebeforeload", function( event, data ){
+	event.preventDefault();
+	data.deferred.resolve( data.absUrl, data.options, "launcher" );
+});
 
 </script>
 
