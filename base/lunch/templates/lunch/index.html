@@ -171,6 +171,10 @@
 		data.deferred.resolve( data.absUrl, data.options, "launcher" );
 	});
 	
+	$('body').swiperight(function() {
+		window.location = "/events/";
+	});
+	
 	function getLunchData(restaurant_name, lunchlists, openinghours) {
 		var menu = $("<p />").append("No lunch menu available.");
 		var hyperlink = "";

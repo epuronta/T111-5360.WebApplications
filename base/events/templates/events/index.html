@@ -73,5 +73,9 @@ $(document).bind( "pagebeforeload", function( event, data ){
 	data.deferred.resolve( data.absUrl, data.options, "launcher" );
 });
 
+$('body').swipeleft(function() {
+	window.location = "/lunch/";
+});
+
 </script>
 </html>

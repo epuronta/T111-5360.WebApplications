@@ -83,11 +83,19 @@ $(document).ready(function(){
 					hyperlink = $('<a />').attr({"href":hyperlink,"target":"_blank"}).text(restaurant_name);
 				var favorite_lunchlist = $("<div/>").append(lunch_data[0]);
 				var today = new Date();
-				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today " + today.getDate() + "." + today.getMonth());
+				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today " + today.getDate() + "." + (today.getMonth()+1));
 				$('#favorite_lunch').append(favorite_lunchlist_header).append(favorite_lunchlist);
 				$('#eventlist').listview('refresh');
 			}				
 		})
+});
+
+$('body').swiperight(function() {
+	window.location = "/lunch/";
+});
+
+$('body').swipeleft(function() {
+	window.location = "/events/";
 });
 
 function getStoreValue() {

@@ -98,7 +98,7 @@
 
 </head>
 <body>
-<div data-role="page" id="mappage" class="page">
+<div data-role="page" id="mappage" class="page" data-theme="b">
 
     <div data-role="header">
         <h1>Events</h1>
@@ -106,6 +106,14 @@
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
     </div>
     
+	<div id="tabs" data-role="navbar" data-iconpos="top">
+        <ul>
+            <li><a href="{% url events-index-view %}"  data-prefetch rel="external">Events</a></li>
+            <li><a href="{% url eventsmap-index-view %}"  data-prefetch rel="external">Events map</a></li>
+            <li><a href="{% url lunch-index-view %}" data-prefetch rel="external">Lunch</a></li>
+        </ul>
+    </div>
+
     <div data-role="content" class="content">
         <div id="basicmap"></div>
     </div>
@@ -176,7 +184,7 @@ function draw_map(events) {
         ]
     });
     map.setCenter(
-        new OpenLayers.LonLat(24.892759,60.174109) // Center of the map
+        new OpenLayers.LonLat(24.835759,60.177109) // Center of the map
             .transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 //new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
