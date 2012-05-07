@@ -98,7 +98,12 @@ function getStoreValue() {
 }
 
 function getLunchData(restaurant_name, lunchlists, openinghours) {
-	var menu = $("<p />").append("No lunch menu available.");
+	var test_item = localStorage.getItem(localStorageKey);
+	if (test_item != null && test_item.length != 0){
+		var menu = $("<p />").append("No lunch menu available.");
+		}else{
+		var menu = $("<p />").append("No favorite restaurant set.");
+		}
 	var hyperlink = "";
 	var operating_hours = "";
 	if(lunchlists !== undefined) {
