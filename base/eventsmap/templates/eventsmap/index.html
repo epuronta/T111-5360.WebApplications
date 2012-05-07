@@ -101,8 +101,8 @@
 <div data-role="page" id="mappage" class="page" data-theme="b">
 
     <div data-role="header">
-        <h1>Events</h1>
-        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+        <h1>Events map</h1>
+        <a href="#home" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
     </div>
     
@@ -266,6 +266,10 @@ function draw_map(events) {
 $(document).bind( "pagebeforeload", function( event, data ){
 	event.preventDefault();
 	data.deferred.resolve( data.absUrl, data.options, "launcher" );
+});
+
+$("a[href='#home']").bind("click", function() {
+	window.location = "/";
 });
 
 </script>

@@ -28,7 +28,7 @@
 <div id="campuslistpage" data-role="page" data-theme="b">
 	<div data-role="header">
 		<h1>Lunch</h1>
-        <a href="{% url launcher-index-view %}" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
+        <a href="#home" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
 	</div>
     
@@ -58,7 +58,6 @@
 	
 	var campuses = new Array("Otaniemi","Töölö","Keskusta","Kumpula","Arabia","Viikki");
 	var campus_urls = new Array("Otaniemi","Toolo","Keskusta","Kumpula","Arabia","Viikki");
-	var launcherUrl = "{% url launcher-index-view %}";
 	var d = new Date();
 	var localStorageKey = "favorite_restaurant_key";
 	var localStorageValue = "";
@@ -102,7 +101,7 @@
 						.text(campuses[campus])
 						)
 						.append($("<a />")
-						.attr({"href":launcherUrl,"data-role":'button',"data-icon":'home',"data-iconpos":'notext',"class":'ui-btn-right'})
+						.attr({"href":"#home","data-role":'button',"data-icon":'home',"data-iconpos":'notext',"class":'ui-btn-right'})
 						.text('Home')
 						)
 						.append($("<a />")
@@ -150,7 +149,6 @@
 						.append(campus_header)
 						.append(campus_content)
 					$('body').append(campus_page)
-					console.log(tabs)
 				}
 				// append the navigational tabs to each lunch subpage
 				$("div[data-role='page'][class='lunch_subpage']").children("div[data-role='header']").after(tabs)
@@ -173,6 +171,14 @@
 	
 	$('body').swiperight(function() {
 		window.location = "/events/";
+	});
+	
+	$("a[href='#home']").live("click", function() {
+		window.location = "/";
+	});
+	
+	$("a[href='#home']").bind("click", function() {
+		window.location = "/";
 	});
 	
 	function getLunchData(restaurant_name, lunchlists, openinghours) {
