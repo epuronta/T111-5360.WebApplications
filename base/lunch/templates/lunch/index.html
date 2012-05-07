@@ -130,7 +130,7 @@
 								var menu = "";
 							var hyperlink = restaurant_current.external_url;
 							var openinghours_str;
-							lunch_data[1][0] !== undefined ? openinghours_str = "Open today: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Probably closed today";
+							lunch_data[1][0] !== undefined ? openinghours_str = "Open: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Probably closed today";
 							var info = "";
 							if(hyperlink.length > 0) 
 								var info = $('<a />').attr({"id":"info_icon","href":hyperlink,"target":"_blank"}).append($("<img />").attr("src","{{STATIC_URL}}lunch/img/info.png"));

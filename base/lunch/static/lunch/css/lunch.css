@@ -39,7 +39,8 @@
 
 .ui-collapsible-content li {
 	margin-top:3px !important;
-	margin-bottom:3px !important;	
+	margin-bottom:3px !important;
+	font-size:10pt;
 }
 
 #title_box a {
