@@ -193,8 +193,15 @@
 		}
 		if(openinghours !== undefined) {
 			for(var index = 0; index < openinghours.length; index += 1) {
-				if(restaurant_name == openinghours[index].restaurant_id)
-					operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+				if(restaurant_name == openinghours[index].restaurant_id) {
+					var to_hour = openinghours[index].to_hour;
+					var from_hour = openinghours[index].from_hour;
+					if(to_hour.length == 3)
+						to_hour = "0" + to_hour;
+					to_hour = to_hour.substring(0,2) + ":" + to_hour.substring(2,4);
+					from_hour = from_hour.substring(0,2) + ":" + from_hour.substring(2,4);
+					operating_hours = [from_hour, to_hour];
+				}
 			}
 		}
 		return [menu, operating_hours];
