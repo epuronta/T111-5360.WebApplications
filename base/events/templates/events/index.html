@@ -17,6 +17,7 @@
     <meta name="MobileOptimized" content="320" />
     
     <title>AaltoMobile > Events</title>
+    
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/events.css" type="text/css" />
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css" />
@@ -25,6 +26,7 @@
 	<script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
     <script>
 		$(document).bind("mobileinit", function() {
+			<!-- Setting a custom hint string for the search field -->
 			$.mobile.listview.prototype.options.filterPlaceholder = "Search events ...";
 		});
 	</script>
@@ -34,11 +36,14 @@
 </head>
 <body>
 	<div id="events" data-role="page" data-theme="b">
+    	<!-- HEADER -->
         <div data-role="header">
             <h1>Events</h1>
             <a href="#home" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
             <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
         </div>
+        
+        <!-- TOP NAVIGATION BAR -->
         <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}" class="ui-btn-active" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -47,6 +52,7 @@
             </ul>
         </div>
         
+        <!-- SUBPAGE CONTENT (LOADED WITH AJAX) -->
         <div data-role="content">
             <ul id="eventlist" data-role="listview" data-filter="true" data-theme="b" data-divider-theme="b"></ul>
         </div>
@@ -55,31 +61,30 @@
 
 <script>
 
-/*$.getDocHeight = function(){
-	var D = document;
-	return Math.max(Math.max(D.body.scrollHeight,D.documentElement.scrollHeight), 
-		Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), 
-		Math.max(D.body.clientHeight, D.documentElement.clientHeight));
-};*/
-
-$(document).bind('ready',function() {
-	$("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
-	addScrollEffect();
-	getEvents(999999);
-});
-
-$(document).bind( "pagebeforeload", function( event, data ){
-	event.preventDefault();
-	data.deferred.resolve( data.absUrl, data.options, "launcher" );
-});
-
-$('body').swipeleft(function() {
-	window.location = "/lunch/";
-});
-
-$("a[href='#home']").bind("click", function() {
-	window.location = "/";
-});
+	$(document).bind('ready',function() {
+		<!-- LOAD the loader.gif -->
+		$("#eventlist").append("<div id='loading'><img src='{{ STATIC_URL }}img/ajax-loader.gif' /></div>");
+		<!-- APPLY the search bar scroll effect (fixed position) -->
+		addScrollEffect();
+		<!-- GET "all" the events -->
+		getEvents(999999);
+	});
+	
+	<!-- This event is binded in order to prevent jQuery Mobile to do its default page change (= laggy) -->
+	$(document).bind( "pagebeforeload", function( event, data ){
+		event.preventDefault();
+		data.deferred.resolve( data.absUrl, data.options, "launcher" );
+	});
+	
+	<!-- APPLYING swipe (left) effect to browse to lunch subpage -->
+	$('body').swipeleft(function() {
+		window.location = "/lunch/";
+	});
+	
+	<!-- BINDING click event to home button -->
+	$("a[href='#home']").bind("click", function() {
+		window.location = "/";
+	});
 
 </script>
 </html>

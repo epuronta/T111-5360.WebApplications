@@ -26,12 +26,14 @@
 
 <body>
 <div id="campuslistpage" data-role="page" data-theme="b">
+	<!-- HEADER -->
 	<div data-role="header">
 		<h1>Lunch</h1>
         <a href="#home" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
 	</div>
     
+    <!-- TOP NAVIGATION BAR -->
     <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -40,6 +42,7 @@
             </ul>
     </div>
     
+    <!-- SUBPAGE CONTENT (LOADED WITH AJAX) -->
 	<div data-role="content" class="campuscontent">    	
 		<ul id="campuslist" data-role="listview" data-theme="b">
 			<li><a href="#Otaniemi">Otaniemi</a></li>
@@ -49,8 +52,8 @@
             <li><a href="#Arabia">Arabia</a></li>
             <li><a href="#Viikki">Viikki</a></li>
 		</ul>		
-	</div><!-- /content -->
-</div><!-- /page -->
+	</div>
+</div>
 
 </body>
 
@@ -122,7 +125,7 @@
 							.append(favorite_button))
 
 							var lunch_data = getLunchData(restaurant_current.name, data.lunchlists, data.openinghours);
-							regex = /(\d+(,\d+)*\s*€)/igm;
+							var regex = /(\d+(,\d+)*\s*€)/igm;
 							if(typeof lunch_data[0] != 'object')
 								var menu = lunch_data[0].replace(regex,'')
 							else
@@ -208,11 +211,12 @@
 	}
 	
 	function popup( txt ) {
-		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>").css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
-		.appendTo( $('body') )
-		.delay( 1500 )
-		.fadeOut( 400, function(){
-		$(this).remove();	
+		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>")
+		.css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
+		.appendTo($('body'))
+		.delay(1500)
+		.fadeOut(400, function() {
+			$(this).remove();	
 		});
 	}
 	

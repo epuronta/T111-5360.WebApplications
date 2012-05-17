@@ -1,3 +1,6 @@
+// JAVASCRIPT FOR THE EVENTS SUBPAGE. ALSO THE LAUNCHER PAGE USES SOME OF THESE FUNCTIONS.
+
+// function to fetch all future Aalto and AYY events (calls displayEvents)
 function getEvents(limit) {
 	$.ajax({
 		url: "/api/events/?limit=999999&offset=0",
@@ -10,13 +13,15 @@ function getEvents(limit) {
 			}
 			data.events.sort(compareDatesFunction);
 			displayEvents(data.events, limit);
-	}, error: function(jqXHR, textStatus, errorThrown) {
-		$('#loading').remove();
-		console.log(jqXHR, textStatus, errorThrown);
-	}
+		}, 
+		error: function(jqXHR, textStatus, errorThrown) {
+			$('#loading').remove();
+			console.log(jqXHR, textStatus, errorThrown);
+		}
 	});
 }
 
+// function to handle and display the events data
 function displayEvents(events, limit) {
 	var how_many = limit;
 	
@@ -42,22 +47,24 @@ function displayEvents(events, limit) {
 	month[9]="October";
 	month[10]="November";
 	month[11]="December";
+	
+	// loop through all the events
 	for(var i = 0; i < events.length; i++) {
 		event = events[i];
-		var divider = "";
+		var divider = ""; // day divider <li> tag
 		var start_date = createDate(event.start_date);
+		// if this events start on a different day than the previous one, create a divider
 		if(i == 0 || compareDates(event, events[i-1])) {
-			//var count = countSameDates(event, events);
 			divider = $("<li />")
 				.addClass("ui-li-divider")
 				.attr({"data-role":"list-divider","role":"heading"})
 				.text(weekday[start_date.getDay()] + " " + start_date.getDate() + "." + (start_date.getMonth()+1))
-			//divider.append($("<span />").addClass("ui-li-count").text(count));
 		}
 		
-		title = formatTitle(event.title);
-		start_time = formatTime(start_date.getHours());
+		title = formatTitle(event.title); // format the title data
+		start_time = formatTime(start_date.getHours()); // format event start time
 		
+		// create event li tag with its title
 		var container = $("<li />")
 			.addClass("popup")
 			.append(
@@ -73,9 +80,11 @@ function displayEvents(events, limit) {
 				)
 			);
 		
+		// set event icon
 		var icon = "false"
 		event.remote_source_name == "AaltoEvents" ? icon = "evt-icon-aalto" : icon = "evt-icon-ayy";
 		
+		// set the event its data
 		for(prop in event) {
 			container
 				.attr({"data-theme":"c","data-icon":icon,"data-iconpos":"left"})
@@ -88,6 +97,7 @@ function displayEvents(events, limit) {
 					);
 		}
 		
+		// hide the past events/dividers (some date time comparison)
 		var today = new Date();
 		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
 		if(compareDatesString(today, start_date) >= 0) {
@@ -100,9 +110,11 @@ function displayEvents(events, limit) {
 			how_many -= 1;
 		}
 		
+		// append the data to content div
 		$("div[data-role='content']").children("ul").hide().append(divider).append(container);
 	}
 	
+	// append the event filters to the page (Aalto & AYY filter icons on the top right)
 	var event_filter = $("<div />")
 		.addClass("filters")
 		.append(
@@ -118,21 +130,18 @@ function displayEvents(events, limit) {
 				.addClass("filter active")
 		);
 	$('.ui-listview-filter').append(event_filter);
+	
+	// set the styling and css classes for the search bar
 	$("div[data-role='content']").children('form').attr("id","scrollable").css({"width":$("#tabs").outerWidth() + "!important"});
+	// refresch the view (apply jQuery CSS styling to the new dynamically appeneded content
 	$('#eventlist').listview('refresh');
+	// remove the loader.gif
 	$('#loading').remove();
+	// fade the page in
 	$("div[data-role='content']").children('ul').fadeIn("slow");
 }
 
-function countSameDates(event, events) {
-	var count = 0;		
-	for(index in events) {
-		if(!compareDates(event, events[index]))
-			count++;
-	}
-	return count;
-}
-
+// 3 DIFFERENT FUNCTIONS TO MAKE EVENT DATE COMPARISONS (SAME LOGICAL, DIFFERENT INPUT HANDLING)
 function compareDatesFunction(evt1, evt2) {
 	d1 = createDate(evt1.start_date);
 	d2 = createDate(evt2.start_date);
@@ -164,6 +173,7 @@ function compareDatesString(d1, d2) {
 	return Math.ceil(d1.getTime()/(one_day))-Math.ceil(d2.getTime()/(one_day));
 }
 
+// create a date from a string in a date-like format
 function createDate(str) {
 	regex = /(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/;
 	date = regex.exec(str)
@@ -200,7 +210,7 @@ function formatTime(time) {
 	return time
 }
 
-
+// move the search bar according to the user's scrolling
 function scrolling() {
 	var form_width = $("#tabs").outerWidth();
 	var y0 = $(window).scrollTop();
@@ -266,6 +276,7 @@ function removeScrollEffect() {
 	return false;	
 }
 
+// filter logic. Attach the click/tap event to the filters to hide the events (of the respective filter)
 $(".filter").live("tap","click", function() {
 	var event_src = $(this);
 	if(event_src.hasClass("active")) {
@@ -287,11 +298,13 @@ $(".filter").live("tap","click", function() {
 	});
 });
 
+// add the search bar scroll effect when the user closes an event popup
 $('a[rel="close"]').live("click", function() {
 	addScrollEffect();
 	return false;
 });
 
+// get the event data from the AJAXed HTML data and append it to the event popup when an event is clicked
 $(".popup").live("tap", "click", function() {
 	var descr = $(this).find("span.descr").clone();
 	var title = $(this).find("span.title").text();
@@ -299,6 +312,7 @@ $(".popup").live("tap", "click", function() {
 	var start_date = createDate($(this).find("span.start_date").text());
 	var days_left = getDaysTillEvent(start_date);
 	
+	// setting up the google maps hyperlink for the event
 	var lat = $(this).find("span.lat").text();
 	var lon = $(this).find("span.lon").text();
 	var google_maps_str = "http://maps.google.com/maps?q=" + lat + "," + lon + "&amp;ie=UTF8&amp;t=m&amp;z=14&amp;ll=" + lat + "," + lon + "&amp;output=embed";
@@ -306,15 +320,17 @@ $(".popup").live("tap", "click", function() {
 	var venue_text = venue.text()
 	venue.length > 0 ? venue_text = venue_text + " @ Google Maps" : venue_text = "@ Google Maps";
 	
+	// adding the target="_blank" for the anchor tags (external URL references)
+	// removing all the empty children elements (except of course img elements)
 	$(descr).children().each(function() {
 		$(this).removeClass();
 		if(!$(this).find('a').attr('target'))
 			!$(this).find('a').attr('target','_blank');
 		if(!$(this).is("img") && $.trim($(this).text()).length == 0)
 			$(this).remove();
-			
 	});
 	
+	// setting up the content div, which is then appended to the popup dialog (down below)
 	var content = $("<div />")
 		.append(
 			$("<h5 />")
@@ -342,13 +358,14 @@ $(".popup").live("tap", "click", function() {
 				.text(venue_text)
 		)
 	}
-		
+	
+	// using the easy-to-use simpledialog2 plugin for the popup
 	$('<div>').simpledialog2({
 		mode : 'blank',
 		top : 0,
 		headerText : start_date.getDate() + "." + (start_date.getMonth()+1) + ". @ " + formatTime(start_date.getHours()) + " (" + days_left +")",
 		headerClose : true,
 		blankContent : content.children(),
-		callbackOpen : removeScrollEffect()
+		callbackOpen : removeScrollEffect() // remove the search bar scrolling effect when an event popup is opened
 	});
 });

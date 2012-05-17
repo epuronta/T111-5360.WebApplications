@@ -32,14 +32,14 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/events.js"></script>
     
 <body>
-    
     <div id="launcher" data-role="page" data-theme="b">
-    
+    	<!-- HEADER -->
         <header data-role="header">
             <h1>Aalto Mobile</h1>
             <p id="credits">T-111.5360<br>WWW Applications<br><a href="http://sci.aalto.fi/" target="_blank">@ Aalto SCI</a></p>
         </header>
         
+        <!-- TOP NAVIGATION BAR -->
         <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}"  data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -48,6 +48,7 @@
             </ul>
         </div>
         
+        <!-- MAIN PAGE CONTENT (LOADED WITH AJAX) -->
         <div id="content" data-role="content">
         	<div id="favorite_lunch"></div>
     		<ul id="eventlist" data-role="listview" data-theme="b" data-divider-theme="b" data-inset="true"></ul>
@@ -57,22 +58,33 @@
 </body>
 
 <script>
-
-var localStorageKey = "favorite_restaurant_key";
-var localStorageValue = "";
-var d = new Date();
-var weekday = d.getDay();
-
-$(document).ready(function(){
-	getEvents(5);
-	restaurant_name = getStoreValue();
-	var ajax_url = "/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
+	
+	var localStorageKey = "favorite_restaurant_key";
+	var localStorageValue = "";
+	var d = new Date();
+	var weekday = d.getDay();
+	
+	$(document).ready(function(){
+		<!-- GET the first five future events -->
+		getEvents(5);
+		<!-- GET the favorite restaurant (if any) -->
+		var restaurant_name = getStoreValue();
+		
+		<!-- MAKE a AJAX request for the lunch info (suboptimal) -->
+		var ajax_url = "/api/lunch/search/?restaurant=" + localStorageValue + "&weekday=" + weekday;
 		$.ajax({
-		url: ajax_url,
-		type: "GET",
-		dataType: "json",
+			url: ajax_url,
+			type: "GET",
+			dataType: "json",
 			success: function(data) {
 				var lunch_data = getLunchData(restaurant_name, data.lunchlists, data.openinghours);
+				// clean up the price strings from the menu data
+				var regex = /(\d+(,\d+)*\s*€)/igm;
+				if(typeof lunch_data[0] != 'object')
+					var menu = lunch_data[0].replace(regex,'')
+				else
+					var menu = "";
+				
 				var hyperlink = "";
 				for(var index = 0; index < data.restaurants.length; index += 1) {
 					if(restaurant_name == data.restaurants[index].name)
@@ -80,54 +92,55 @@ $(document).ready(function(){
 				}
 				if(hyperlink.length > 0)
 					hyperlink = $('<a />').attr({"href":hyperlink,"target":"_blank"}).text(restaurant_name);
-				var favorite_lunchlist = $("<div/>").append(lunch_data[0]);
+				var favorite_lunchlist = $("<div/>").append(menu);
 				var today = new Date();
 				var favorite_lunchlist_header = $("<h4/>").append(hyperlink).append(" - today " + today.getDate() + "." + (today.getMonth()+1));
 				$('#favorite_lunch').append(favorite_lunchlist_header).append(favorite_lunchlist);
 				$('#eventlist').listview('refresh');
 			}				
 		})
-});
-
-$('body').swiperight(function() {
-	window.location = "/lunch/";
-});
-
-$('body').swipeleft(function() {
-	window.location = "/events/";
-});
-
-function getStoreValue() {
-    var item = localStorage.getItem(localStorageKey);
-    if (item != null && item.length != 0)
-		localStorageValue = item;
-	return item;
-}
-
-function getLunchData(restaurant_name, lunchlists, openinghours) {
-	var test_item = localStorage.getItem(localStorageKey);
-	if (test_item != null && test_item.length != 0){
-		var menu = $("<p />").append("No lunch menu available.");
-		}else{
-		var menu = $("<p />").append("No favorite restaurant set.");
-		}
-	var hyperlink = "";
-	var operating_hours = "";
-	if(lunchlists !== undefined) {
-		for(var index = 0; index < lunchlists.length; index += 1) {
-			if(restaurant_name == lunchlists[index].restaurant_id) 
-				menu = '<ul>' + lunchlists[index].lunch + '</ul>'
-		}
+	});
+	
+	<!-- SWIPE events  -->
+	$('body').swiperight(function() {
+		window.location = "/lunch/";
+	});
+	
+	$('body').swipeleft(function() {
+		window.location = "/events/";
+	});
+	
+	<!-- looks for the user's favorite restaurant from the local storage (if any) -->
+	function getStoreValue() {
+		var item = localStorage.getItem(localStorageKey);
+		if (item != null && item.length != 0)
+			localStorageValue = item;
+		return item;
 	}
-	if(openinghours !== undefined) {
-		for(var index = 0; index < openinghours.length; index += 1) {
-			if(restaurant_name == openinghours[index].restaurant_id) 
-				operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+	
+	<!-- parsing the lunch data returned via AJAX and returning the menu and operating hours of the corresponding restaurant (restaurant_name) -->
+	function getLunchData(restaurant_name, lunchlists, openinghours) {
+		var test_item = localStorage.getItem(localStorageKey);
+		if (test_item != null && test_item.length != 0)
+			var menu = $("<p />").append("No lunch menu available.");
+		else
+			var menu = $("<p />").append("No favorite restaurant set.");
+		var hyperlink = "";
+		var operating_hours = "";
+		if(lunchlists !== undefined) {
+			for(var index = 0; index < lunchlists.length; index += 1) {
+				if(restaurant_name == lunchlists[index].restaurant_id) 
+					menu = '<ul>' + lunchlists[index].lunch + '</ul>'
+			}
 		}
+		if(openinghours !== undefined) {
+			for(var index = 0; index < openinghours.length; index += 1) {
+				if(restaurant_name == openinghours[index].restaurant_id) 
+					operating_hours = [openinghours[index].from_hour, openinghours[index].to_hour];
+			}
+		}
+		return [menu, operating_hours];
 	}
-	//console.log(lunch_data)
-	return [menu, operating_hours];
-}
 	
 </script>
 
