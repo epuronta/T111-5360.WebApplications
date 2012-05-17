@@ -100,6 +100,9 @@ function displayEvents(events, limit) {
 		// hide the past events/dividers (some date time comparison)
 		var today = new Date();
 		today = new Date(today.getFullYear(), today.getMonth(),today.getDate(),0,0,0,0);
+		// if no start time has been defined, set it to 18 to avoid tagging the event as a past event
+		if(start_date.getHours() == 0) start_date = new Date(start_date.getFullYear(), start_date.getMonth(),start_date.getDate(),18,0,0,0);
+		
 		if(compareDatesString(today, start_date) >= 0) {
 			if(divider != "") divider.addClass("past");
 			container.addClass("past");
