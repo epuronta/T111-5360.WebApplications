@@ -129,7 +129,7 @@
 							if(typeof lunch_data[0] != 'object')
 								var menu = lunch_data[0].replace(regex,'')
 							else
-								var menu = "";
+								var menu = lunch_data[0];
 							var hyperlink = restaurant_current.external_url;
 							var openinghours_str;
 							lunch_data[1][0] !== undefined ? openinghours_str = "Open: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Probably closed today";

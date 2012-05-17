@@ -83,7 +83,7 @@
 				if(typeof lunch_data[0] != 'object')
 					var menu = lunch_data[0].replace(regex,'')
 				else
-					var menu = "";
+					var menu = lunch_data[0];
 				
 				var hyperlink = "";
 				for(var index = 0; index < data.restaurants.length; index += 1) {
