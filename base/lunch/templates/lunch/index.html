@@ -25,13 +25,17 @@
 </head> 
 
 <body>
+
+<!-- CAMPUSLIST PAGE -->
 <div id="campuslistpage" data-role="page" data-theme="b">
+
 	<div data-role="header">
 		<h1>Lunch</h1>
         <a href="#home" data-role="button" data-icon="home" data-iconpos="notext" class="ui-btn-right">Home</a>
         <a href="#goback" data-role="button" data-icon="back" data-iconpos="notext" data-rel="back" class="ui-btn-left">Go Back</a>
 	</div>
     
+    <!-- TOP NAVIGATION BAR -->
     <div id="tabs" data-role="navbar" data-iconpos="top">
             <ul>
                 <li><a href="{% url events-index-view %}" data-prefetch rel="external"><img src="{{ STATIC_URL }}img/events.png"/>Events</a></li>
@@ -41,6 +45,7 @@
     </div>
     
 	<!-- campuslist is hardcoded -->
+    <!-- SUBPAGE CONTENT (LOADED WITH AJAX) -->
 	<div data-role="content" class="campuscontent">    	
 		<ul id="campuslist" data-role="listview" data-theme="b">
 			<li><a href="#Otaniemi">Otaniemi</a></li>
@@ -50,8 +55,8 @@
             <li><a href="#Arabia">Arabia</a></li>
             <li><a href="#Viikki">Viikki</a></li>
 		</ul>		
-	</div><!-- /content -->
-</div><!-- /page -->
+	</div>
+</div>
 
 </body>
 
@@ -66,7 +71,7 @@
 		
 	$(document).ready(function(event) {
 		
-		// creating the 3 navigational tabs dynamically
+		// creating the 3 navigational tabs dynamically to subpages
 		var tabs = $('<div />').attr({"id":"tabs","data-role":"navbar","data-iconpos":"top"})
 			.append($("<ul />")
 				.append($("<li />")
@@ -90,12 +95,13 @@
 			)
 		
 		$.ajax({
-			//We fetch today's lunch lists
+			//Fetching today's lunch lists
 			url: "/api/lunch/search/?weekday=" + weekday,
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
 				for(campus in campuses){
+					//Subpages for each campus
 					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b',"class":"lunch_subpage"})
 					//Header with back and home buttons
 					var campus_header = $("<div />")
@@ -126,11 +132,12 @@
 							.append(favorite_button))
 							
 							var lunch_data = getLunchData(restaurant_current.name, data.lunchlists, data.openinghours);
-							regex = /(\d+(,\d+)*\s*€)/igm;
+							//Cleaning lunch menus (removing prices)
+							var regex = /(\d+(,\d+)*\s*€)/igm;
 							if(typeof lunch_data[0] != 'object')
 								var menu = lunch_data[0].replace(regex,'')
 							else
-								var menu = "";
+								var menu = lunch_data[0];
 							var hyperlink = restaurant_current.external_url;
 							//Restaurant opening hours
 							var openinghours_str;
@@ -149,31 +156,35 @@
 					}
 					
 					campus_content.append(campus_restaurants)
+					
+					//Appending headers and contents for each campus page and campus pages to the body of the document
 					campus_page
 						.attr("id",campus_urls[campus])
 						.append(campus_header)
 						.append(campus_content)
 					$('body').append(campus_page)
 				}
-				// append the navigational tabs to each lunch subpage
+				// Appending the navigational tabs to each lunch subpage
 				$("div[data-role='page'][class='lunch_subpage']").children("div[data-role='header']").after(tabs)
 			}	
 		})
 		
 	});
 	
+	//Clicking the favorite button stores selected restaurant to local storage
 	$(".favorite_button").live("click", function(){
 		localStorageValue = this.id;
 		localStorage.setItem(localStorageKey, localStorageValue)
 		popup(localStorageValue + " has been added as you favorite restaurant");
 	});
 	
-
+	//This event is binded in order to prevent jQuery Mobile to do its default page change (= laggy)
 	$(document).bind( "pagebeforeload", function( event, data ){
 		event.preventDefault();
 		data.deferred.resolve( data.absUrl, data.options, "launcher" );
 	});
 	
+	//APPLYING swipe (right) effect to browse to events subpage
 	$('body').swiperight(function() {
 		window.location = "/events/";
 	});
@@ -203,8 +214,8 @@
 				if(restaurant_name == openinghours[index].restaurant_id) {
 					var to_hour = openinghours[index].to_hour;
 					var from_hour = openinghours[index].from_hour;
-					if(to_hour.length == 3)
-						to_hour = "0" + to_hour;
+					if(from_hour.length == 3)
+						from_hour = "0" + from_hour;
 					to_hour = to_hour.substring(0,2) + ":" + to_hour.substring(2,4);
 					from_hour = from_hour.substring(0,2) + ":" + from_hour.substring(2,4);
 					operating_hours = [from_hour, to_hour];
@@ -215,11 +226,12 @@
 	}
 	//Function to show that selecting favorite restaurant has succeeded
 	function popup( txt ) {
-		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>").css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
-		.appendTo( $('body') )
-		.delay( 1500 )
-		.fadeOut( 400, function(){
-		$(this).remove();	
+		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>")
+		.css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
+		.appendTo($('body'))
+		.delay(1500)
+		.fadeOut(400, function() {
+			$(this).remove();	
 		});
 	}
 	
