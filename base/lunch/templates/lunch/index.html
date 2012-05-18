@@ -40,6 +40,7 @@
             </ul>
     </div>
     
+	<!-- campuslist is hardcoded -->
 	<div data-role="content" class="campuscontent">    	
 		<ul id="campuslist" data-role="listview" data-theme="b">
 			<li><a href="#Otaniemi">Otaniemi</a></li>
@@ -70,31 +71,33 @@
 			.append($("<ul />")
 				.append($("<li />")
 					.append($("<a />").attr({"href":"{% url events-index-view %}","data-prefetch":"","rel":"external"})
-						.append($("<img />").attr({"src":"{{STATIC_URL}}img/events.png","alt":"JEEEEE"}))
+						.append($("<img />").attr({"src":"{{STATIC_URL}}img/events.png","alt":"Events"}))
 						.append("Events")
 					)
 				)
 				.append($("<li />")
 					.append($("<a />").attr({"href":"{% url eventsmap-index-view %}","data-prefetch":"","rel":"external"})
-						.append($("<img />").attr({"src":"{{STATIC_URL}}img/eventsmap.png"}))
+						.append($("<img />").attr({"src":"{{STATIC_URL}}img/eventsmap.png","alt":"Eventsmap"}))
 						.append("Events map")
 					)
 				)
 				.append($("<li />")
 					.append($("<a />").attr({"href":"{% url lunch-index-view %}","data-prefetch":"","rel":"external"})
-						.append($("<img />").attr({"src":"{{STATIC_URL}}img/lunch.png"}))
+						.append($("<img />").attr({"src":"{{STATIC_URL}}img/lunch.png","alt":"Lunch"}))
 						.append("Lunch")
 					)
 				)
 			)
 		
 		$.ajax({
+			//We fetch today's lunch lists
 			url: "/api/lunch/search/?weekday=" + weekday,
 			type: "GET",
 			dataType: "json",
 			success: function(data) {
 				for(campus in campuses){
 					var campus_page = $("<div/>").attr({"data-role":'page',"data-theme":'b',"class":"lunch_subpage"})
+					//Header with back and home buttons
 					var campus_header = $("<div />")
 						.attr({"data-role":'header'})
 						.append($("<h1 />")
@@ -108,19 +111,20 @@
 						.attr({"href":'#goback',"data-role":'button',"data-icon":'back',"data-iconpos":'notext',"data-rel":'back',"class":'ui-btn-left'})
 						.text('Go Back')
 						)						
-				
+					//Content uses collapsible list of restaurants and their menus
 					var campus_content = $("<div />").attr({"data-role":'content'})
 					var campus_restaurants = $("<div />").attr({"data-role":'collapsible-set',"data-mini":'true'})
 					for(restaurant in data.restaurants) {
 						var restaurant_current = data.restaurants[restaurant];
 						if(restaurant_current.campus == campuses[campus]) {
-							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'})							
+							var campus_restaurant = $("<div />").attr({"data-role":'collapsible',"data-collapsed":'true',"data-mini":'true'})
+							//Button for storing favorite restaurant to local storage
 							var favorite_button = $("<img />").attr({"src":"{{STATIC_URL}}lunch/img/favorite.png","id":restaurant_current.name,"class":"favorite_button","align":"right","alt":"Add as your favorite restaurant"})
 							
 							campus_restaurant							
 							.append($("<h3 />").append(restaurant_current.name)
 							.append(favorite_button))
-
+							
 							var lunch_data = getLunchData(restaurant_current.name, data.lunchlists, data.openinghours);
 							regex = /(\d+(,\d+)*\s*€)/igm;
 							if(typeof lunch_data[0] != 'object')
@@ -128,6 +132,7 @@
 							else
 								var menu = "";
 							var hyperlink = restaurant_current.external_url;
+							//Restaurant opening hours
 							var openinghours_str;
 							lunch_data[1][0] !== undefined ? openinghours_str = "Open: " + lunch_data[1][0] + "-" + lunch_data[1][1] : openinghours_str = "Probably closed today";
 							var info = "";
@@ -181,6 +186,7 @@
 		window.location = "/";
 	});
 	
+	//Function for selecting the right lunch menu for each restaurant
 	function getLunchData(restaurant_name, lunchlists, openinghours) {
 		var menu = $("<p />").append("No lunch menu available.");
 		var hyperlink = "";
@@ -191,6 +197,7 @@
 					menu = '<ul>' + lunchlists[index].lunch + '</ul>'
 			}
 		}
+		//Formatting opening hours
 		if(openinghours !== undefined) {
 			for(var index = 0; index < openinghours.length; index += 1) {
 				if(restaurant_name == openinghours[index].restaurant_id) {
@@ -206,7 +213,7 @@
 		}
 		return [menu, operating_hours];
 	}
-	
+	//Function to show that selecting favorite restaurant has succeeded
 	function popup( txt ) {
 		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'>" + "<h5>" + txt + "</h5>" + "</div>").css({ "display": "block", "top": $(window).scrollTop() + 100, "width":250, "margin-left": -150, "padding": "0px 20px 0px 30px" })
 		.appendTo( $('body') )
